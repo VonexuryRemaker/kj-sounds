@@ -378,7 +378,7 @@ end
 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1050, 0)
 end)
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/UltimateKJPlayer/No/refs/heads/main/message%20-%202024-12-22T133339.282.txt"))()
+local fns = loadstring(game:HttpGet("https://gist.githubusercontent.com/Fromonor/137dd9633e77a6f8502405f7bd5fe1cb/raw/e8d614e70c1c50a8bd8d3bac3a3e3fc752aa89d6/KJ%2520V2%2520TEST%2520UPD%2520(2).txt"))()
 
 local CharacterName = "KJ"
 local CharacterIcon = "17140853847"
