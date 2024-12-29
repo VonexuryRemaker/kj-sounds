@@ -11053,7 +11053,6 @@ task.spawn(function()
 
 task.spawn(function()
 wait(1.8)
-
 local tool = Instance.new("Tool")
 tool.Name = "Diddy Mode Bomb"
 tool.RequiresHandle = false
@@ -11085,1279 +11084,6 @@ local function onActivated()
 task.spawn(function()
 sound:Stop()
 end)
-
-local Players = game:GetService("Players")
-local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-
-local function deleteInventory()
-    for _, tool in pairs(player.Backpack:GetChildren()) do
-        if tool:IsA("Tool") or tool:IsA("HopperBin") then
-            tool:Destroy()
-        end
-    end
-
-    for _, tool in pairs(character:GetChildren()) do
-        if tool:IsA("Tool") or tool:IsA("HopperBin") then
-            tool:Destroy()
-        end
-    end
-end
-
-deleteInventory()
-
-player.CharacterAdded:Connect(function(newCharacter)
-    character = newCharacter
-    deleteInventory()
-end)
-
-task.spawn(function()
-wait(4.7)
-local tool = Instance.new("Tool")
-tool.Name = "Skibidi Barrage"
-tool.RequiresHandle = false
-tool.ToolTip = "ooh kick yes yes baby"
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local ToolNumber = 1
-local cooldownTime = 20
-local isCooldownActive = false
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local hotbar = playerGui:WaitForChild("Hotbar")
-local backpack = hotbar:WaitForChild("Backpack")
-local localScript = backpack:WaitForChild("LocalScript")
-local cooldown = localScript:WaitForChild("Cooldown")
-local clonedCooldown
-
-local function onActivated()
-    if isCooldownActive then return end
-    isCooldownActive = true
-
-    clonedCooldown = cooldown:Clone()
-    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
-    clonedCooldown.Parent = hotbarSlot1
-    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
-
-task.spawn(function()
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-local primaryPart = character:WaitForChild("HumanoidRootPart")  -- Use HumanoidRootPart instead of PrimaryPart
-
-local Debris = game:GetService("Debris")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-
-local Thrown = workspace.Thrown
-local Replication = ReplicatedStorage.Replication
-
-local attacking = Instance.new("Accessory", character)
-attacking.Name = "attacking"
-
-local Freeze = Instance.new("Accessory", character)
-Freeze.Name = "Freeze"
-Freeze:SetAttribute("NoStop", true)
-
-local RavageStart = Instance.new("Animation")
-RavageStart.AnimationId = "rbxassetid://16945573694"
-local RavageStartTrack = humanoid:LoadAnimation(RavageStart)
-RavageStartTrack:Play()
-RavageStartTrack:AdjustSpeed(1)
-
-local erm = shared.sfx({
-    SoundId = "rbxassetid://16945495411",
-    Volume = 1,
-    Parent = character.Torso
-})
-erm:Resume()
-
-local Hitted = nil
-local HitboxSize = Vector3.new(10, 10, 10)
-
-RavageStartTrack:GetMarkerReachedSignal("Hitbox"):Connect(function()
-    local Hitbox = Instance.new("Part")
-    Hitbox.Size = Vector3.new(5, 5, 5)
-    Hitbox.CanCollide = false
-    Hitbox.Transparency = 1
-    Hitbox.Anchored = false  -- Don't anchor the hitbox part
-    Hitbox.Parent = workspace.Thrown
-    Hitbox.Massless = true
-    local weld = Instance.new("Weld", workspace.Thrown)
-    weld.Part0 = Hitbox
-    weld.Part1 = primaryPart
-    Debris:AddItem(Hitbox, 5)
-    Debris:AddItem(weld, 5)
-    spawn(function()
-        wait(0.5)
-        Hitbox:Destroy()
-        weld:Destroy()
-    end)
-
-    local hasHit = false
-    Hitbox.Touched:Connect(function(hit)
-        if Hitted ~= nil or hasHit then return end
-        hasHit = true
-        if hit.Parent and hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= character then
-            local fakeHitted = hit.Parent
-            Hitted = fakeHitted
-            if Hitted:FindFirstChild("AbsoluteImmortal") then
-                return
-            end
-            if not Hitted:FindFirstChild("Humanoid") then
-                return
-            end
-            Hitted:SetAttribute('Ragdolled', false)
-
-            local HPrimaryPart = Hitted.PrimaryPart
-            local HHumanoid = Hitted.Humanoid
-            primaryPart.Anchored = false
-
-            humanoid.AutoRotate = true
-            HHumanoid.AutoRotate = true
-
-            shared.repfire({
-                Effect = "RagdollEffect",
-                Character = Hitted
-            })
-
-            HHumanoid:TakeDamage(5)
-
-            shared.repfire({
-                Effect = "ForcePush",
-                Character = Hitted,
-                Strength = 50
-            })
-
-            spawn(function()
-                wait(.1)
-                HPrimaryPart.Anchored = false
-            end)
-
-            spawn(function()
-                local targetCFrame = primaryPart.CFrame * CFrame.new(0, 0, -2.15) * CFrame.Angles(0, math.rad(180), 0)
-                local alpha = 0.2
-
-                while (HPrimaryPart.CFrame.Position - targetCFrame.Position).Magnitude > 0.1 do
-                    HPrimaryPart.CFrame = HPrimaryPart.CFrame:Lerp(targetCFrame, alpha)
-                    wait(0)
-                end
-            end)
-
-            local RavageLanded = Instance.new("Animation")
-            RavageLanded.AnimationId = "rbxassetid://16945550029"
-            local RavageLandedTrack = humanoid:LoadAnimation(RavageLanded)
-            RavageLandedTrack:Play()
-            RavageStartTrack:Stop()
-
-            local RavageVictim = Instance.new("Animation")
-            RavageVictim.AnimationId = "rbxassetid://16945557433"
-            local RavageVictimTrack = HHumanoid:LoadAnimation(RavageVictim)
-            RavageVictimTrack:Play()
-
-task.spawn(function()
-local function GetGitSound(GithubSnd, SoundName)
-    local url = GithubSnd  
-    if not isfile(SoundName..".mp3") then  
-        writefile(SoundName..".mp3", game:HttpGet(url))
-    end  
-    local sound = Instance.new("Sound")
-    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
-    return sound  
-end  
-
-local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241228152126.mp3?raw=true", "goofyravage")
-
-Clock.Parent = workspace  
-Clock.Volume = 1  
-Clock.TimePosition = 0
-
-Clock:Play()
-end)
-
-player:SetAttribute("Ultimate", 1)
-
-
-
-            RavageLandedTrack:AdjustSpeed(1)
-            RavageVictimTrack:AdjustSpeed(1)
-
-            shared.repfire({
-                Effect = "KJJumpBack",
-                Character = character
-            })
-
-            local count = 0
-
-            RavageLandedTrack:GetMarkerReachedSignal("BodyStrike"):Connect(function()
-                HHumanoid:TakeDamage(0.15)
-                if count < 2 then
-                    count += 1
-                    shared.repfire({
-                        Effect = "KJPunch",
-                        Character = character,
-                        Start = HPrimaryPart.CFrame * CFrame.Angles(0, 0, math.rad(180)),
-                        MeshImpactOffset = Hitted.Torso.CFrame * CFrame.Angles(0, 0, math.rad(180)),
-                        DustOffset = primaryPart.CFrame
-                    })
-                    HHumanoid:TakeDamage(4)
-local player = game.Players.LocalPlayer
-player:SetAttribute("Ultimate", 4)
-
-local startValue = 4
-local endValue = 8
-local duration = 1.2
-local increment = 0.1
-local steps = (endValue - startValue) / increment
-local stepTime = duration / steps
-
-for i = startValue, endValue, increment do
-    player:SetAttribute("Ultimate", i)
-    task.wait(stepTime)
-end
-
-player:SetAttribute("Ultimate", endValue)
-
-                end
-            end)
-
-            RavageLandedTrack:GetMarkerReachedSignal("BarageStart"):Connect(function()
-                local barrage = ReplicatedStorage.Resources.KJEffects.barrage:Clone()
-                barrage.Parent = workspace.Thrown
-                barrage.CFrame = Hitted.Torso.CFrame
-                barrage.Anchored = false
-
-                local weld1 = Instance.new("ManualWeld", workspace.Thrown)
-                weld1.Part0 = Hitted.Torso
-                weld1.Part1 = barrage
-                weld1.C0 = CFrame.new(0, -0.5, 0.5) * CFrame.Angles(35, math.rad(0), 50)
-
-                for i, v in barrage:GetDescendants() do
-                    if v:IsA("ParticleEmitter") then
-                        v.Enabled = true
-                    end
-                end
-                wait(1.2)
-player:SetAttribute("Ultimate", 8)
-
-                for i, v in barrage:GetDescendants() do
-                    if v:IsA("ParticleEmitter") then
-                        v.Enabled = false
-                    end
-                end
-
-                wait(2)
-                barrage:Destroy()
-                weld1:Destroy()
-            end)
-
-            RavageLandedTrack:GetMarkerReachedSignal("Uppercut"):Connect(function()
-                shared.repfire({
-                    Effect = "KJUppercut",
-                    Character = character,
-                    CF = HPrimaryPart.CFrame,
-                    ShowaveCF = HPrimaryPart.CFrame * CFrame.new(0, 8, 0) * CFrame.Angles(0, 0, math.rad(90))
-                })
-                HHumanoid:TakeDamage(3.25)
-player:SetAttribute("Ultimate", 11)
-            end)
-
-            RavageLandedTrack:GetMarkerReachedSignal("DoSpin"):Connect(function()
-                shared.repfire({
-                    Effect = "KJSpin",
-                    Character = character,
-                    SpinParticlesOffset = primaryPart.CFrame,
-                    BeamOffset = primaryPart.CFrame * CFrame.new(0, -2, 13.5)
-                })
-            end)
-
-            spawn(function()
-                wait(4.34)
-                local LegLef = ReplicatedStorage.Resources.KJEffects["Left Leg"]:Clone()
-                LegLef.Parent = Thrown
-                LegLef.Transparency = 1
-                LegLef.CFrame = character["Left Leg"].CFrame
-
-                local LegLefweld = Instance.new("Weld", workspace)
-                LegLefweld.Part0 = LegLef
-                LegLefweld.Part1 = character["Left Leg"]
-                Debris:AddItem(LegLefweld, 0.7)
-                Debris:AddItem(LegLef, 0.7)
-            end)
-
-            RavageLandedTrack:GetMarkerReachedSignal("KickImpact"):Connect(function()
-                shared.repfire({
-                    Effect = "KJKick",
-                    Character = character,
-                    ParticleOffset = HPrimaryPart.CFrame,
-                    MeshOffset = primaryPart.CFrame * CFrame.Angles(0, math.rad(-90), 0)
-                })
-                local BOOM = shared.sfx({
-                    SoundId = "rbxassetid://16945723339",
-                    Volume = 1,
-                    Parent = character.PrimaryPart
-                })
-                BOOM:Resume()
-                HHumanoid:TakeDamage(6)
-player:SetAttribute("Ultimate", 17)
-            end)
-
-            RavageLandedTrack:GetMarkerReachedSignal("Kick"):Connect(function()
-                HHumanoid:TakeDamage(3.5)
-
-                primaryPart.Anchored = false
-                HPrimaryPart.Anchored = false
-
-                humanoid.AutoRotate = true
-                HHumanoid.AutoRotate = true
-
-                local BodyV = Instance.new("BodyVelocity", HPrimaryPart)
-                BodyV.MaxForce = Vector3.new(1, 1, 1) * 100_000_000
-                if Hitted.Humanoid.Health < 15 or Hitted.Humanoid.Health == 15 then
-                    BodyV.Velocity = humanoid.RootPart.CFrame.LookVector * 300 + humanoid.RootPart.CFrame.UpVector * 100
-                    shared.repfire({
-                        Effect = "Wall Collision",
-                        root = Hitted.PrimaryPart,
-                        NoCrater = "skysnatcher",
-                        nosound = false,
-                        stronger = 100,
-                        Seed = math.random(100, 500)
-                    })
-
-                    Hitted.Humanoid.Health = 0
-                else
-                    BodyV.Velocity = humanoid.RootPart.CFrame.LookVector * 55 + humanoid.RootPart.CFrame.UpVector * 30
-                end
-                Debris:AddItem(BodyV, 0.1)
-
-                if attacking and Freeze then
-                    attacking:Destroy()
-                    Freeze:Destroy()
-                    primaryPart.Anchored = false
-                    wait(0.5)
-                end
-            end)
-        end
-    end)
-end)
-
-RavageStartTrack.Ended:Connect(function()
-    attacking:Destroy()
-    Freeze:Destroy()
-    primaryPart.Anchored = false
-end)
-end)
-
-    local startSize = clonedCooldown.Size
-    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
-
-    spawn(function()
-        local startTime = tick()
-        local initialSize = clonedCooldown.Size
-
-        while tick() - startTime < cooldownTime do
-            local elapsed = tick() - startTime
-            local progress = elapsed / cooldownTime
-
-            local newSize = UDim2.new(
-                initialSize.X.Scale,
-                initialSize.X.Offset,
-                initialSize.Y.Scale * (1 - progress),
-                initialSize.Y.Offset * (1 - progress)
-            )
-
-            clonedCooldown.Size = newSize
-            wait()
-        end
-
-        clonedCooldown.Size = endSize
-        clonedCooldown:Destroy()
-        isCooldownActive = false
-    end)
-end
-
-tool.Equipped:Connect(onActivated)
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local tool = Instance.new("Tool")
-tool.Name = "Ohio Rizz Kick"
-tool.RequiresHandle = false
-tool.ToolTip = "ooh kick yes yes baby"
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local ToolNumber = 2
-local cooldownTime = 10
-local isCooldownActive = false
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local hotbar = playerGui:WaitForChild("Hotbar")
-local backpack = hotbar:WaitForChild("Backpack")
-local localScript = backpack:WaitForChild("LocalScript")
-local cooldown = localScript:WaitForChild("Cooldown")
-local clonedCooldown
-
-local function onActivated()
-    if isCooldownActive then return end
-    isCooldownActive = true
-
-    clonedCooldown = cooldown:Clone()
-    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
-    clonedCooldown.Parent = hotbarSlot1
-    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
-
-task.spawn(function()
-local soundeffect = Instance.new("Sound")
-soundeffect.SoundId = "rbxassetid://16944636115"
-soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
-soundeffect:Play()
-soundeffect.Volume = 1
-
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
-
-local replicatedStorage = game:GetService("ReplicatedStorage")
-local debris = game:GetService("Debris")
-local players = game:GetService("Players")
-local tweenService = game:GetService("TweenService")
-
-local Replication = replicatedStorage.Replication
-
-local variant = false
-local Character = game.Players.LocalPlayer.Character
-local Humanoid = Character:FindFirstChildWhichIsA("Humanoid")
-local RootPart = Humanoid.RootPart
-local Torso = Character.Torso
-
-local Player = players:GetPlayerFromCharacter(Character)
-
-local Grab = Instance.new("Animation")
-Grab.AnimationId = "rbxassetid://16944265635"
-local Hit = Instance.new("Animation")
-Hit.AnimationId = "rbxassetid://16944345619"
-
-local freeze = Instance.new("Accessory", Character)
-freeze.Name = "Freeze"
-freeze:SetAttribute("NoStop", true)
-
-local attacking = Instance.new("Accessory", Character)
-attacking.Name = "attacking"
-
-local GrabTrack = Humanoid:LoadAnimation(Grab)
-local HitTrack = Humanoid:LoadAnimation(Hit)
-Grab.AnimationId = "rbxassetid://0"
-
-Hit.AnimationId = "rbxassetid://0"
-local hitList = {}
-variant = false
-
-GrabTrack:GetMarkerReachedSignal("StartSweepEffects"):Connect(function()
-    shared.repfire({Effect = "Swift Sweep", Character = Character})
-end)
-
-GrabTrack:GetMarkerReachedSignal("Hitbox"):Connect(function()
-    attacking:Destroy()
-    freeze:Destroy()
-    local Hitbox = Instance.new("Part")
-    Hitbox.Size = Vector3.new(4, 5, 4)
-    Hitbox.Transparency = 1
-    Hitbox.Anchored = false
-    Hitbox.CanCollide = false
-    Hitbox.Parent = workspace.Thrown
-    Hitbox.Massless = true
-    Hitbox.CFrame = RootPart.CFrame
-
-    local Weld = Instance.new("Weld", Hitbox)
-    Weld.Part0 = Hitbox
-    Weld.Part1 = Humanoid.RootPart
-
-    Weld.C1 = CFrame.new(0, 0, -3)
-
-    debris:AddItem(Hitbox, 0.2)
-
-    for _, v in pairs(workspace:GetPartsInPart(Hitbox)) do
-        if v.Parent:FindFirstChild("Humanoid") and v.Parent ~= Character then
-            if v.Parent:FindFirstChild("Hit by:" .. Character.Name) == nil then
-                local Target = v.Parent
-                local THumanoid = Target.Humanoid
-                if Target:FindFirstChild("AbsoluteImmortal") then
-                    return
-                end
-                if not Target:FindFirstChild("Humanoid") then
-                    return
-                end
-
-                Target:SetAttribute('Ragdolled', false)
-
-                local victimAnimation = Instance.new("Animation")
-                victimAnimation.AnimationId = "rbxassetid://16944744186"
-                local victimTrack = Target.Humanoid:LoadAnimation(victimAnimation)
-                victimTrack:Play()
-                victimTrack:AdjustSpeed(1)
-
-                local x = Instance.new("Accessory", Target)
-                x.Name = "Hit by:" .. Character.Name
-                debris:AddItem(x, 0.2)
-                THumanoid.RootPart.CFrame = CFrame.lookAt(THumanoid.RootPart.Position, Humanoid.RootPart.Position)
-
-                shared.repfire({Effect = "Swift Sweep", Character = Character, Hit = Target})
-
-                THumanoid:TakeDamage(3)
-player:SetAttribute("Ultimate", 3)
-
-local soundeffect = Instance.new("Sound")
-soundeffect.SoundId = "rbxassetid://16944654440"
-soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
-soundeffect:Play()
-soundeffect.Volume = 1
-
-                GrabTrack:Stop()
-
-                Character:SetAttribute("Combo", 0)
-
-                HitTrack:Play()
-                HitTrack:AdjustSpeed(1)
-                HitTrack.Ended:Connect(function()
-                    if attacking and freeze then
-                        attacking:Destroy()
-                        freeze:Destroy()
-                    end
-                end)
-
-                HitTrack:GetMarkerReachedSignal("Hit"):Connect(function()
-                    local Hitbox = Instance.new("Part")
-                    Hitbox.Size = Vector3.new(4, 5, 4)
-                    Hitbox.Transparency = 1
-                    Hitbox.Anchored = false
-                    Hitbox.CanCollide = false
-                    Hitbox.Parent = workspace.Thrown
-                    Hitbox.Massless = true
-                    Hitbox.CFrame = RootPart.CFrame
-
-                    local Weld = Instance.new("Weld", Hitbox)
-                    Weld.Part0 = Hitbox
-                    Weld.Part1 = Humanoid.RootPart
-
-                    Weld.C1 = CFrame.new(0, 0, -3)
-
-                    debris:AddItem(Hitbox, 0.2)
-
-                    for _, v in pairs(workspace:GetPartsInPart(Hitbox)) do
-                        if v.Parent:FindFirstChild("Humanoid") and v.Parent ~= Character and not v.Parent:FindFirstChild("IFrame") then
-                            if v.Parent:FindFirstChild("Hit by:" .. Character.Name) == nil then
-                                local Target = v.Parent
-                                local THumanoid = Target.Humanoid
-
-                                if Target:FindFirstChild("AbsoluteImmortal") then
-                                    return
-                                end
-                                if not Target:FindFirstChild("Humanoid") then
-                                    return
-                                end
-                                Target:SetAttribute('Ragdolled', false)
-
-                                local x = Instance.new("Accessory", Target)
-                                x.Name = "Hit by:" .. Character.Name
-                                debris:AddItem(x, 0.2)
-
-                                THumanoid.RootPart.CFrame = CFrame.lookAt(THumanoid.RootPart.Position, Humanoid.RootPart.Position)
-
-                                if Target:GetAttribute("Ragdolled", true) then
-                                    variant = true
-                                    Target:GetAttribute("Ragdolled", false)
-                                end
-
-                                shared.repfire({Effect = "Backhand", Look = Target.PrimaryPart})
-
-                                local victimAnimation = Instance.new("Animation")
-                                victimAnimation.AnimationId = "rbxassetid://10471478869"
-                                local victimTrack = Target.Humanoid:LoadAnimation(victimAnimation)
-                                victimTrack:Play()
-                                victimTrack:AdjustSpeed(1)
-
-local soundeffect = Instance.new("Sound")
-soundeffect.SoundId = "rbxassetid://16944654157"
-soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
-soundeffect:Play()
-soundeffect.Volume = 1
-
-local soundeffect = Instance.new("Sound")
-soundeffect.SoundId = "rbxassetid://10471418545"
-soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
-soundeffect:Play()
-soundeffect.Volume = 1
-
-local soundeffect = Instance.new("Sound")
-soundeffect.SoundId = "rbxassetid://10471421218"
-soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
-soundeffect:Play()
-soundeffect.Volume = 1
-
-player:SetAttribute("Ultimate", 4)
-
-                                local TargetAnimation = Target.Humanoid:LoadAnimation(game.ReplicatedStorage.Assets.Animations.Extra.Knockback)
-                                local BodyVelocity = Instance.new("BodyVelocity", Target.PrimaryPart)
-                                BodyVelocity.MaxForce = Vector3.new(1, 0, 1) * 100_000
-                                BodyVelocity.Velocity = Target.PrimaryPart.CFrame.LookVector * -40
-
-                                TargetAnimation:GetMarkerReachedSignal("landed"):Connect(function()
-                                    BodyVelocity:Destroy()
-                                end)
-
-                                Target.Humanoid:TakeDamage(4)
-
-                                TargetAnimation:Play()
-                                TargetAnimation:AdjustSpeed(1)
-                                HitTrack.Ended:Connect(function()
-                                    if attacking and freeze then
-                                        attacking:Destroy()
-                                        freeze:Destroy()
-                                    end
-                                end)
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-    end
-end)
-
-GrabTrack:Play()
-GrabTrack:AdjustSpeed(1)
-GrabTrack.Ended:Connect(function()
-    if attacking and freeze then
-        attacking:Destroy()
-        freeze:Destroy()
-    end
-end)
-
-GrabTrack.Stopped:Connect(function()
-    if attacking and freeze then
-        attacking:Destroy()
-        freeze:Destroy()
-    end
-end)
-end)
-
-    local startSize = clonedCooldown.Size
-    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
-
-    spawn(function()
-        local startTime = tick()
-        local initialSize = clonedCooldown.Size
-
-        while tick() - startTime < cooldownTime do
-            local elapsed = tick() - startTime
-            local progress = elapsed / cooldownTime
-
-            local newSize = UDim2.new(
-                initialSize.X.Scale,
-                initialSize.X.Offset,
-                initialSize.Y.Scale * (1 - progress),
-                initialSize.Y.Offset * (1 - progress)
-            )
-
-            clonedCooldown.Size = newSize
-            wait()
-        end
-
-        clonedCooldown.Size = endSize
-        clonedCooldown:Destroy()
-        isCooldownActive = false
-    end)
-end
-
-tool.Equipped:Connect(onActivated)
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local tool = Instance.new("Tool")
-tool.Name = "Diddy Beam"
-tool.RequiresHandle = false
-tool.ToolTip = "ooh kick yes yes baby"
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local ToolNumber = 3
-local cooldownTime = 15
-local isCooldownActive = false
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local hotbar = playerGui:WaitForChild("Hotbar")
-local backpack = hotbar:WaitForChild("Backpack")
-local localScript = backpack:WaitForChild("LocalScript")
-local cooldown = localScript:WaitForChild("Cooldown")
-local clonedCooldown
-
-local function onActivated()
-    if isCooldownActive then return end
-    isCooldownActive = true
-
-    clonedCooldown = cooldown:Clone()
-    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
-    clonedCooldown.Parent = hotbarSlot1
-    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
-
-task.spawn(function()
-local function GetGitSound(GithubSnd, SoundName)
-    local url = GithubSnd  
-    if not isfile(SoundName..".mp3") then  
-        writefile(SoundName..".mp3", game:HttpGet(url))
-    end  
-    local sound = Instance.new("Sound")
-    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
-    return sound  
-end  
-
-local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241228165200.mp3?raw=true", "goofyahhuncle2")
-
-Clock.Parent = workspace  
-Clock.Volume = 1  
-Clock.TimePosition = 0
-
-Clock:Play()
-end)
-
-task.spawn(function()
-task.spawn(function()
-local anm = 17325254223
-local a = Instance.new("Animation")
-a.AnimationId = "rbxassetid://" .. anm
-local e = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(a)
-e:Play()
-
-local l_char_7 = game.Players.LocalPlayer.Character
-local l_Collat_0 = game.ReplicatedStorage.Resources.Collat
-local l_timeScale_0 = 1
-local v2388 = {}
-local l_seed_0 = ""
-
-local function exp()
-    task.delay(0, function()
-        for _, v2391 in pairs(l_char_7.HumanoidRootPart["Spin" .. l_seed_0]:GetDescendants()) do
-            if v2391:IsA("ParticleEmitter") then
-                v2391.Enabled = false
-                v2391.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set to cyan
-            end
-        end
-
-        local l_TweenService_13 = game:GetService("TweenService")
-        local l_Thrown_9 = workspace.Thrown
-        local v2394 = l_Collat_0.ExplosionCharged:Clone()
-        task.delay(5, function()
-            v2394:Destroy()
-        end)
-
-        local l_Wind_0 = v2394.Wind
-        l_TweenService_13:Create(l_Wind_0, TweenInfo.new(3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-            Orientation = l_Wind_0.Orientation + Vector3.new(0, 100, 0)
-        }):Play()
-
-        local l_PointLight_2 = v2394.RootPos.Attachment.PointLight
-        l_PointLight_2.Enabled = true
-        l_TweenService_13:Create(l_PointLight_2, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
-            Brightness = 0, 
-            Range = 20
-        }):Play()
-
-        task.spawn(function()
-            local l_Decal_79 = v2394.Floor.Decal
-            l_Decal_79.Transparency = 0
-            task.wait(0.1)
-            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(0.85, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                Color3 = Color3.fromRGB(0, 0, 0)
-            }):Play()
-            task.wait(0.5)
-            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-                Transparency = 1
-            }):Play()
-        end)
-
-        for _, v2399 in pairs(v2394:GetDescendants()) do
-            if v2399:IsA("ParticleEmitter") then
-                v2399.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set to cyan
-                v2399:Emit(v2399:GetAttribute("EmitCount"))
-            end
-        end
-
-        v2394:SetPrimaryPartCFrame(l_char_7.HumanoidRootPart.CFrame)
-        v2394.Parent = l_Thrown_9
-
-        task.spawn(function()
-            local l_Beams_0 = v2394.Beams
-            local l_RedDots_0 = v2394.RedDots
-            local l_BigRed_0 = v2394.BigRed
-
-            for _, v2404 in pairs(l_Beams_0:GetDescendants()) do
-                if v2404:IsA("Beam") then
-                    v2404.Enabled = true
-                    v2404.TextureSpeed = v2404.TextureSpeed * Random.new():NextNumber(2, 2.5)
-                    task.delay(0.065, function()
-                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                            TextureSpeed = -0.2
-                        }):Play()
-                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
-                            Brightness = 0
-                        }):Play()
-                    end)
-                end
-            end
-
-            for _, v2406 in pairs(l_RedDots_0:GetDescendants()) do
-                if v2406:IsA("Beam") then
-                    v2406.Enabled = true
-                    v2406.TextureSpeed = v2406.TextureSpeed * Random.new():NextNumber(2, 2.25)
-                    l_TweenService_13:Create(v2406, TweenInfo.new(2.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                        TextureSpeed = -0.5
-                    }):Play()
-                    task.delay(1.5, function()
-                        l_TweenService_13:Create(v2406, TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
-                            Brightness = 0, 
-                            LightEmission = 1
-                        }):Play()
-                    end)
-                end
-            end
-
-            for _, v2408 in pairs(l_BigRed_0:GetDescendants()) do
-                if v2408:IsA("Beam") then
-                    v2408.Enabled = true
-                    v2408.TextureSpeed = v2408.TextureSpeed * Random.new():NextNumber(1.2, 1.6)
-                    l_TweenService_13:Create(v2408, TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                        TextureSpeed = -1, 
-                        Width1 = 70
-                    }):Play()
-                    task.delay(0.6, function()
-                        l_TweenService_13:Create(v2408, TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
-                            Brightness = 0, 
-                            LightEmission = 1
-                        }):Play()
-                    end)
-                end
-            end
-        end)
-    end)
-end
-
-task.delay(1.5, function()
-    exp()
-    local s = Instance.new("Sound", game.Players.LocalPlayer.Character.PrimaryPart)
-    s.SoundId = "rbxassetid://72000489811842"
-    s:Play()
-    s.Volume = 0
-end)
-
-local s = Instance.new("Sound", game.Players.LocalPlayer.Character.PrimaryPart)
-s.SoundId = "rbxassetid://74376324560435"
-s:Play()
-s.Volume = 0
-end)
-task.spawn(function()
-local anm = 17325254223
-local a = Instance.new("Animation")
-a.AnimationId = "rbxassetid://" .. anm
-local e = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(a)
-e:Play()
-
-local l_char_7 = game.Players.LocalPlayer.Character
-local l_Collat_0 = game.ReplicatedStorage.Resources.Collat
-local l_timeScale_0 = 1
-local v2388 = {}
-local l_seed_0 = ""
-
-local function exp()
-    task.delay(0, function()
-        for _, v2391 in pairs(l_char_7.HumanoidRootPart["Spin" .. l_seed_0]:GetDescendants()) do
-            if v2391:IsA("ParticleEmitter") then
-                v2391.Enabled = false
-            end
-        end
-
-        local l_TweenService_13 = game:GetService("TweenService")
-        local l_Thrown_9 = workspace.Thrown
-        local v2394 = l_Collat_0.ExplosionCharged:Clone()
-
-        task.delay(5, function()
-            v2394:Destroy()
-        end)
-
-        local l_Wind_0 = v2394.Wind
-        l_TweenService_13:Create(l_Wind_0, TweenInfo.new(3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-            Orientation = l_Wind_0.Orientation + Vector3.new(0, 100, 0, 0)
-        }):Play()
-
-        local l_PointLight_2 = v2394.RootPos.Attachment.PointLight
-        l_PointLight_2.Enabled = true
-        l_TweenService_13:Create(l_PointLight_2, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
-            Brightness = 0,
-            Range = 20
-        }):Play()
-
-        task.spawn(function()
-            local l_Decal_79 = v2394.Floor.Decal
-            l_Decal_79.Transparency = 0
-            task.wait(0.1)
-            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(0.85, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                Color3 = Color3.fromRGB(0, 0, 255)  -- Set color to blue
-            }):Play()
-            task.wait(0.5)
-            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
-                Transparency = 1
-            }):Play()
-        end)
-
-        for _, v2399 in pairs(v2394:GetDescendants()) do
-            if v2399:IsA("ParticleEmitter") then
-                -- Change particle color to blue
-                local emitter = v2399
-                emitter.Color = ColorSequence.new(Color3.fromRGB(0, 0, 255))  
-                emitter:Emit(emitter:GetAttribute("EmitCount"))
-            end
-        end
-
-        v2394:SetPrimaryPartCFrame(l_char_7.HumanoidRootPart.CFrame)
-        v2394.Parent = l_Thrown_9
-
-        task.spawn(function()
-            local l_Beams_0 = v2394.Beams
-            local l_RedDots_0 = v2394.RedDots
-            local l_BigRed_0 = v2394.BigRed
-
-            for _, v2404 in pairs(l_Beams_0:GetDescendants()) do
-                if v2404:IsA("Beam") then
-                    v2404.Enabled = true
-                    v2404.TextureSpeed = v2404.TextureSpeed * Random.new():NextNumber(2, 2.5)
-                    task.delay(0.065, function()
-                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                            TextureSpeed = -0.2
-                        }):Play()
-                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
-                            Brightness = 0
-                        }):Play()
-                    end)
-                end
-            end
-
-            for _, v2406 in pairs(l_RedDots_0:GetDescendants()) do
-                if v2406:IsA("Beam") then
-                    v2406.Enabled = true
-                    v2406.TextureSpeed = v2406.TextureSpeed * Random.new():NextNumber(2, 2.25)
-                    l_TweenService_13:Create(v2406, TweenInfo.new(2.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                        TextureSpeed = -0.5
-                    }):Play()
-                    task.delay(1.5, function()
-                        l_TweenService_13:Create(v2406, TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
-                            Brightness = 0,
-                            LightEmission = 1
-                        }):Play()
-                    end)
-                end
-            end
-
-            for _, v2408 in pairs(l_BigRed_0:GetDescendants()) do
-                if v2408:IsA("Beam") then
-                    v2408.Enabled = true
-                    v2408.TextureSpeed = v2408.TextureSpeed * Random.new():NextNumber(1.2, 1.6)
-                    l_TweenService_13:Create(v2408, TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
-                        TextureSpeed = -1,
-                        Width1 = 70
-                    }):Play()
-                    task.delay(0.6, function()
-                        l_TweenService_13:Create(v2408, TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
-                            Brightness = 0,
-                            LightEmission = 1
-                        }):Play()
-                    end)
-                end
-            end
-        end)
-    end)
-    return
-end
-
-local v2409 = nil
-for _, v2411 in pairs(l_char_7.Humanoid:GetPlayingAnimationTracks()) do
-    if v2411.Animation.AnimationId == "rbxassetid://17325254223" then
-        v2409 = v2411
-        break
-    end
-end
-
-local v2412 = {}
-for _, v2414 in pairs(l_Collat_0:GetChildren()) do
-    if v2414:IsA("Part") then
-        local l_l_char_7_FirstChild_0 = l_char_7:FindFirstChild(v2414.Name)
-        if l_l_char_7_FirstChild_0 then
-            if not v2412[l_l_char_7_FirstChild_0.Name] then
-                v2412[l_l_char_7_FirstChild_0.Name] = {}
-            end
-            for _, v2417 in pairs(v2414:GetChildren()) do
-                local v2418 = v2417:Clone()
-                v2418.Name = v2418.Name .. l_seed_0
-                v2418.Parent = l_l_char_7_FirstChild_0
-                table.insert(v2388, v2418)
-                v2412[l_l_char_7_FirstChild_0.Name][v2418.Name] = v2417
-            end
-        end
-    end
-end
-
-local l_v2388_0 = v2388
-local l_v2412_0 = v2412
-task.delay(6, function()
-    for _, v2422 in pairs(l_v2388_0) do
-        v2422:Destroy()
-    end
-    table.clear(l_v2388_0)
-    table.clear(l_v2412_0)
-end)
-
-local l_l_char_7_0 = l_char_7
-local l_l_seed_0_0 = l_seed_0
-table.insert(v2388, v2409.Stopped:Connect(function()
-    for _, v2426 in pairs(l_l_char_7_0.HumanoidRootPart["Spin" .. l_l_seed_0_0]:GetDescendants()) do
-        if v2426:IsA("ParticleEmitter") then
-            v2426.Enabled = false
-        end
-    end
-end))
-
-local l_l_Collat_0_0 = l_Collat_0
-task.delay(0.48, function()
-    for _, v2429 in pairs(l_l_char_7_0.HumanoidRootPart["WindupEmit" .. l_l_seed_0_0]:GetDescendants()) do
-        if v2429:IsA("ParticleEmitter") then
-            v2429:Emit(v2429:GetAttribute("EmitCount"))
-        end
-    end
-    local l_TweenService_14 = game:GetService("TweenService")
-    local _ = l_l_Collat_0_0.CollateralFX
-    local l_Thrown_10 = workspace.Thrown
-
-    task.spawn(function()
-        local function v2435()
-            for _, v2434 in pairs(l_l_char_7_0.Torso["TorsoWindup" .. l_l_seed_0_0]:GetDescendants()) do
-                if v2434:IsA("ParticleEmitter") then
-                    v2434:Emit(v2434:GetAttribute("EmitCount"))
-                end
-            end
-        end
-        v2435()
-        task.wait(0.07)
-        v2435()
-        task.wait(0.07)
-        v2435()
-        task.wait(0.07)
-    end)
-
-    local v2436 = l_l_Collat_0_0.WindupWind:Clone()
-    v2436:PivotTo(l_l_char_7_0.PrimaryPart.CFrame * CFrame.new(0, 0, -1.22070312E-4, 1, 4.41075736E-6, -1.19208789E-6, -4.41075235E-6, 1, 3.93391656E-6, 1.19210517E-6, -3.93391065E-6, 1))
-    v2436.Parent = workspace.Thrown
-
-    for _, v2438 in pairs(v2436:GetDescendants()) do
-        if v2438:IsA("ParticleEmitter") then
-            v2438:Emit(v2438:GetAttribute("EmitCount"))
-        end
-    end
-
-    task.spawn(function()
-        local l_Wind_1 = v2436.Wind
-        l_TweenService_14:Create(l_Wind_1, TweenInfo.new(1.6, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
-            Orientation = l_Wind_1.Orientation + Vector3.new(0, -180, 0, 0)
-        }):Play()
-    end)
-
-    v2436:SetPrimaryPartCFrame(l_l_char_7_0.HumanoidRootPart.CFrame)
-    v2436.Parent = l_Thrown_10
-
-    task.delay(5, function()
-        v2436:Destroy()
-    end)
-
-    task.spawn(function()
-        local l_Start_39 = v2436.WindWave.Start
-        local l_End_39 = v2436.WindWave.End
-        l_Start_39.Decal.Transparency = 0.72
-        l_TweenService_14:Create(l_Start_39, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-            CFrame = l_End_39.CFrame
-        }):Play()
-        l_TweenService_14:Create(l_Start_39.Mesh, TweenInfo.new(0.85, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
-            Scale = l_End_39.Mesh.Scale
-        }):Play()
-        l_TweenService_14:Create(l_Start_39.Decal, TweenInfo.new(0.85, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
-            Transparency = 1
-        }):Play()
-    end)
-
-    task.spawn(function()
-        local l_Start_40 = v2436.WindPillar.Start
-        local l_End_40 = v2436.WindPillar.End
-        l_Start_40.Decal.Transparency = 0.72
-        l_TweenService_14:Create(l_Start_40, TweenInfo.new(0.75, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
-            CFrame = l_End_40.CFrame
-        }):Play()
-        l_TweenService_14:Create(l_Start_40.Mesh, TweenInfo.new(0.75, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
-            Scale = l_End_40.Mesh.Scale
-        }):Play()
-        l_TweenService_14:Create(l_Start_40.Decal, TweenInfo.new(0.75, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
-            Transparency = 1
-        }):Play()
-    end)
-end)
-
-task.delay(0.65, function()
-    for _, v2440 in pairs(l_char_7.Humanoid:GetPlayingAnimationTracks()) do
-        if v2440.Animation.AnimationId == "rbxassetid://12447707844" then
-            v2440:Stop()
-        end
-    end
-end)
-end)
-end)
-
-    local startSize = clonedCooldown.Size
-    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
-
-    spawn(function()
-        local startTime = tick()
-        local initialSize = clonedCooldown.Size
-
-        while tick() - startTime < cooldownTime do
-            local elapsed = tick() - startTime
-            local progress = elapsed / cooldownTime
-
-            local newSize = UDim2.new(
-                initialSize.X.Scale,
-                initialSize.X.Offset,
-                initialSize.Y.Scale * (1 - progress),
-                initialSize.Y.Offset * (1 - progress)
-            )
-
-            clonedCooldown.Size = newSize
-            wait()
-        end
-
-        clonedCooldown.Size = endSize
-        clonedCooldown:Destroy()
-        isCooldownActive = false
-    end)
-end
-
-tool.Equipped:Connect(onActivated)
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local tool = Instance.new("Tool")
-tool.Name = "Spiraling Rizz"
-tool.RequiresHandle = false
-tool.ToolTip = "ooh kick yes yes baby"
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-
-local ToolNumber = 4
-local cooldownTime = 15
-local isCooldownActive = false
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-local hotbar = playerGui:WaitForChild("Hotbar")
-local backpack = hotbar:WaitForChild("Backpack")
-local localScript = backpack:WaitForChild("LocalScript")
-local cooldown = localScript:WaitForChild("Cooldown")
-local clonedCooldown
-
-local function onActivated()
-    if isCooldownActive then return end
-    isCooldownActive = true
-
-    clonedCooldown = cooldown:Clone()
-    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
-    clonedCooldown.Parent = hotbarSlot1
-    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
-
-task.spawn(function()
-local function GetGitSound(GithubSnd, SoundName)
-    local url = GithubSnd  
-    if not isfile(SoundName..".mp3") then  
-        writefile(SoundName..".mp3", game:HttpGet(url))
-    end  
-    local sound = Instance.new("Sound")
-    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
-    return sound  
-end  
-
-local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241228172401.mp3?raw=true", "boiwatdahail")
-
-Clock.Parent = workspace  
-Clock.Volume = 2  
-Clock.TimePosition = 0
-
-Clock:Play()
-end)
-
-task.spawn(function()
-local player = game.Players.LocalPlayer
-repeat wait() until player.Character and player.Character.Humanoid
-local humanoid = player.Character:WaitForChild("Humanoid")
-
-local anim = Instance.new("Animation")
-anim.AnimationId = "rbxassetid://78521642007560"
-
-local kjcounterstartup = humanoid:LoadAnimation(anim)
-anim.AnimationId = "rbxassetid://0"
-kjcounterstartup:Play()
-
-local kj = Instance.new("Sound")
-kj.SoundId = "rbxassetid://72864971245980"
-kj.Parent = game.Players.LocalPlayer.Character.Torso
-kj:Play()
-kj.Volume = 1
-
-task.spawn(function()
-game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
-wait(1)
-game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-end)
-    end)
-
-    local startSize = clonedCooldown.Size
-    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
-
-    spawn(function()
-        local startTime = tick()
-        local initialSize = clonedCooldown.Size
-
-        while tick() - startTime < cooldownTime do
-            local elapsed = tick() - startTime
-            local progress = elapsed / cooldownTime
-
-            local newSize = UDim2.new(
-                initialSize.X.Scale,
-                initialSize.X.Offset,
-                initialSize.Y.Scale * (1 - progress),
-                initialSize.Y.Offset * (1 - progress)
-            )
-
-            clonedCooldown.Size = newSize
-            wait()
-        end
-
-        clonedCooldown.Size = endSize
-        clonedCooldown:Destroy()
-        isCooldownActive = false
-    end)
-end
-
-tool.Equipped:Connect(onActivated)
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-end)
-
 
     task.spawn(function()
 local player = game.Players.LocalPlayer
@@ -12467,7 +11193,7 @@ tool.ToolTip = "ooh kick yes yes baby"
 tool.Parent = game.Players.LocalPlayer.Backpack
 
 local ToolNumber = 2
-local cooldownTime = 30
+local cooldownTime = 99999
 local isCooldownActive = false
 
 local player = game.Players.LocalPlayer
@@ -12493,26 +11219,6 @@ task.spawn(function()
 sound:Stop()
 end)
 
-task.spawn(function()
-local function GetGitSound(GithubSnd, SoundName)
-    local url = GithubSnd  
-    if not isfile(SoundName..".mp3") then  
-        writefile(SoundName..".mp3", game:HttpGet(url))
-    end  
-    local sound = Instance.new("Sound")
-    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
-    return sound  
-end  
-
-local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241229031521.mp3?raw=true", "goofyahhdropkick2")
-
-Clock.Parent = workspace  
-Clock.Volume = 1  
-Clock.TimePosition = 0
-
-Clock:Play()
-end)
-
     task.spawn(function()
 
 local player = game.Players.LocalPlayer
@@ -12536,12 +11242,12 @@ local player = game.Players.LocalPlayer
     local RUNNN = shared.sfx({
         SoundId = "rbxassetid://17429233290",
         Parent = character.Torso,
-        Volume = 0
+        Volume = 4
     })
     local RUNNNMUSIC = shared.sfx({
         SoundId = "rbxassetid://17356346310",
         Parent = character.Torso,
-        Volume = 0
+        Volume = 2
     })
     RUNNN:Resume()
     RUNNNMUSIC:Resume()
@@ -12564,7 +11270,7 @@ local player = game.Players.LocalPlayer
     local l_char_24 = l_LocalPlayer_0.Character 
     local HRP = l_char_24.PrimaryPart
     
-    local Speed = 1000
+    local Speed = 300
     
     spawn(function()
         local TS = game:GetService('TweenService')
@@ -12701,7 +11407,6 @@ local player = game.Players.LocalPlayer
                 motor6D.Parent = CameraPart
                 RUNNN:Stop()
     RUNNNMUSIC:Stop()
-Clock:Stop()
 
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -14100,6 +12805,2112 @@ end)
     
             Hitbox.Touched:Wait()
         end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "2 Seasonings"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 1
+local cooldownTime = 20
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+sound:Stop()
+end)
+
+task.spawn(function()
+wait(0.9)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function deleteInventory()
+    for _, tool in pairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+end
+
+deleteInventory()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    deleteInventory()
+end)
+end)
+
+task.spawn(function()
+wait(20.7)
+player:SetAttribute("Ultimate", 27)
+local tool = Instance.new("Tool")
+tool.Name = "Diddy Mode Bomb"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 1
+local cooldownTime = 20
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+sound:Stop()
+end)
+
+    task.spawn(function()
+local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    local character = game.Players.LocalPlayer.Character
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+	local root = character:FindFirstChild("HumanoidRootPart")
+	local tp = shared.sfx({
+        SoundId = "rbxassetid://17149593018",
+        Parent = character.Torso,
+        Volume = 3
+    })
+    tp:Resume()
+    local fall = shared.sfx({
+        SoundId = "rbxassetid://17141392513",
+        Parent = character.Torso,
+        Volume = 3
+    })
+    fall:Resume()
+	local animation = Instance.new("Animation")
+    animation.AnimationId = "rbxassetid://17141153099"
+
+	local freeze = Instance.new("Accessory", character)
+	freeze.Name = "Freeze"
+	freeze:SetAttribute("NoStop", true)
+
+	local AbsoluteImmortal = Instance.new("Accessory", character)
+	AbsoluteImmortal.Name = "AbsoluteImmortal"
+
+	local track = humanoid:LoadAnimation(animation)
+        animation.AnimationId = "rbxassetid://0"
+
+	track:Play()
+track:GetMarkerReachedSignal("Voiceline"):Connect(function()
+		local BAKUDAN = shared.sfx({
+            SoundId = "rbxassetid://17141392676",
+            Parent = character.Torso,
+            Volume = 3
+        })
+        BAKUDAN:Resume()
+	end)
+
+	track:GetMarkerReachedSignal("ChargingSound"):Connect(function()
+		local IMMACHARGEMAHLASER = shared.sfx({
+            SoundId = "rbxassetid://17141392976",
+            Parent = character.Torso,
+            Volume = 3
+        })
+        IMMACHARGEMAHLASER:Resume()
+	end)
+
+	track:GetMarkerReachedSignal("FinalBoarExplosion"):Connect(function()
+		local BOOM = shared.sfx({
+            SoundId = "rbxassetid://17141392854",
+            Parent = character.Torso,
+            Volume = 3
+                    })
+                    BOOM:Resume()
+    end)
+	shared.repfire({Effect = "Stoic Bomb",ogrootcfr = root.CFrame, char = character, hit = character, humanoid = humanoid, id = 0, Seed = math.random(4.5, 12.5)})
+
+	track.Stopped:Connect(function()
+		freeze:Destroy()
+		AbsoluteImmortal:Destroy()
+	end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "10-10-10 Dropkick"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 2
+local cooldownTime = 99999
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+-- Function to execute when the tool is equipped
+local function onActivated()
+    -- Prevent activation if cooldown is active
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+sound:Stop()
+end)
+
+    task.spawn(function()
+
+local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    local Debris = game:GetService("Debris")
+    local Players = game:GetService("Players")
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    
+    local Replication = ReplicatedStorage.Replication
+    local character = game.Players.LocalPlayer.Character
+        local PrimaryPart = character.PrimaryPart
+        local Humanoid = character.Humanoid
+        local player = Players:GetPlayerFromCharacter(character)
+    
+        local animation3 = Instance.new("Animation")
+        animation3.AnimationId = "rbxassetid://17354976067"
+        local track3 = Humanoid:LoadAnimation(animation3)
+        animation3.AnimationId = "rbxassetid://0"
+        track3:Play()
+    local RUNNN = shared.sfx({
+        SoundId = "rbxassetid://17429233290",
+        Parent = character.Torso,
+        Volume = 4
+    })
+    local RUNNNMUSIC = shared.sfx({
+        SoundId = "rbxassetid://17356346310",
+        Parent = character.Torso,
+        Volume = 2
+    })
+    RUNNN:Resume()
+    RUNNNMUSIC:Resume()
+    
+        local Freeze = Instance.new("Accessory", character)
+        Freeze.Name = "Freeze"
+        Freeze:SetAttribute("NoStop", true)
+    
+        
+        
+        track3:GetMarkerReachedSignal("End"):Connect(function()
+            Freeze:Destroy()
+        end)
+    
+        track3:GetMarkerReachedSignal("SpeedLinesStart"):Connect(function()
+            
+            
+    local Player = game:GetService("Players")
+    local l_LocalPlayer_0 = Player.LocalPlayer
+    local l_char_24 = l_LocalPlayer_0.Character 
+    local HRP = l_char_24.PrimaryPart
+    
+    local Speed = 300
+    
+    spawn(function()
+        local TS = game:GetService('TweenService')
+        local speedv = Instance.new('IntValue', script)
+        game.Debris:AddItem(speedv, 0.5)
+        speedv.Value = 300 * 1.1
+        TS:Create(speedv, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Value = 600 / 3}):Play()
+    
+        task.spawn(function()
+            task.wait(0.5)
+            TS:Create(speedv, TweenInfo.new(2), {Value = 1700 / 3}):Play()
+        end)
+    
+        speedv:GetPropertyChangedSignal("Value"):Connect(function()
+            Speed = speedv.Value
+        end)
+    end)
+    local BodyVelocity = Instance.new("BodyVelocity", HRP)
+    BodyVelocity.Name = "KJBV"
+    BodyVelocity.MaxForce = Vector3.new(400000, 0, 400000)
+    BodyVelocity.Velocity = HRP.CFrame.LookVector * Speed
+    
+    local BodyGyro = Instance.new("BodyGyro", HRP)
+    BodyGyro.MaxTorque = Vector3.new(400000, 400000, 400000)
+    BodyGyro.CFrame = HRP.CFrame
+    
+    game.Debris:AddItem(BodyVelocity, 5)
+    game.Debris:AddItem(BodyGyro, 5)
+    
+    BodyVelocity.Destroying:Connect(function()
+        Speed = 0
+    end)
+    
+    local IsDestroyed
+    
+    task.delay(4, function()
+        Speed = 120
+        repeat
+            wait(0.1)
+            if Speed >= 12 then
+                Speed -= 12
+            end
+        until IsDestroyed
+    end)
+    
+    local Attach
+    Attach = game:GetService("RunService").RenderStepped:Connect(function()
+        if not IsDestroyed then
+            BodyVelocity.Velocity = HRP.CFrame.LookVector * Speed
+        elseif IsDestroyed then
+            Attach:Disconnect()
+            Attach = nil
+        end
+    end)
+            shared.repfire({
+                Effect = "DropKickStartUpSpeedLines",
+                char = character,
+                Bind = character
+            })
+    
+            local Hitbox = Instance.new("Part")
+            Hitbox.Size = Vector3.new(5, 5, 5)
+            Hitbox.CanCollide = false
+            Hitbox.Transparency = 1
+            Hitbox.Anchored = false
+            Hitbox.Parent = workspace.Thrown
+            Hitbox.Massless = true
+            local weld = Instance.new("Weld", workspace.Thrown)
+            weld.Part0 = Hitbox
+            weld.Part1 = character.Torso
+            Debris:AddItem(Hitbox, 5)
+            Debris:AddItem(weld, 5)
+            track3:GetMarkerReachedSignal("EndHitbox"):Connect(function()
+                Hitbox:Destroy()
+            end)
+            local debounce = false
+    
+            local function onTouch(hit)
+                local startTime = tick()
+                local Hittedfake = hit.Parent
+                local Hitted = Hittedfake:Clone()
+                if debounce or not Hitted or Hitted == character then
+                    return
+                end
+                if not Hitted:FindFirstChild("Humanoid") then
+                    return
+                end
+                if Hitted:GetAttribute("Ragdolled",true) then
+                    return
+                end
+                if Hitted:FindFirstChild("AbsoluteImmortal") then
+                    return
+                end
+    
+    Hitted.Parent = workspace.Live
+    Hitted.HumanoidRootPart.CFrame = Hittedfake.HumanoidRootPart.CFrame
+                local HPrimaryPart = Hitted.PrimaryPart
+                local HHumanoid = Hitted.Humanoid
+    
+                debounce = true
+                Hitbox:Destroy()
+    
+                local Freeze2 = Instance.new("Accessory", Hitted)
+                Freeze2.Name = "Freeze"
+                Freeze2:SetAttribute("NoStop", true)
+    spawn(function()
+                local HELP = shared.sfx({
+                    SoundId = "rbxassetid://17363377920",
+                    Parent = workspace,
+                    Volume = 2
+                })
+                HELP:Resume()
+                wait(0.05)
+                local HIT = shared.sfx({
+                    SoundId = "rbxassetid://17363374089",
+                    Parent = workspace,
+                    Volume = 2
+                })
+                HIT:Resume()
+            end)
+                
+                
+                local CameraPart = Instance.new("Part")
+                CameraPart.Transparency = 1
+                CameraPart.CanCollide = false
+                CameraPart.Massless = true
+                CameraPart.Name = "Cam"
+                CameraPart.Parent = character
+    
+                -- Attach the CameraPart to the Humano12idRootPart using a Motor6D
+                local motor6D = Instance.new("Motor6D")
+                motor6D.Part0 = character.HumanoidRootPart
+                motor6D.Part1 = CameraPart
+                motor6D.Parent = CameraPart
+                RUNNN:Stop()
+    RUNNNMUSIC:Stop()
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function deleteInventory()
+    for _, tool in pairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+end
+
+deleteInventory()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    deleteInventory()
+end)
+
+task.spawn(function()
+wait(15.6)
+local tool = Instance.new("Tool")
+tool.Name = "Skibidi Barrage"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 1
+local cooldownTime = 20
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local primaryPart = character:WaitForChild("HumanoidRootPart")  -- Use HumanoidRootPart instead of PrimaryPart
+
+local Debris = game:GetService("Debris")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Thrown = workspace.Thrown
+local Replication = ReplicatedStorage.Replication
+
+local attacking = Instance.new("Accessory", character)
+attacking.Name = "attacking"
+
+local Freeze = Instance.new("Accessory", character)
+Freeze.Name = "Freeze"
+Freeze:SetAttribute("NoStop", true)
+
+local RavageStart = Instance.new("Animation")
+RavageStart.AnimationId = "rbxassetid://16945573694"
+local RavageStartTrack = humanoid:LoadAnimation(RavageStart)
+RavageStartTrack:Play()
+RavageStartTrack:AdjustSpeed(1)
+
+local erm = shared.sfx({
+    SoundId = "rbxassetid://16945495411",
+    Volume = 1,
+    Parent = character.Torso
+})
+erm:Resume()
+
+local Hitted = nil
+local HitboxSize = Vector3.new(10, 10, 10)
+
+RavageStartTrack:GetMarkerReachedSignal("Hitbox"):Connect(function()
+    local Hitbox = Instance.new("Part")
+    Hitbox.Size = Vector3.new(5, 5, 5)
+    Hitbox.CanCollide = false
+    Hitbox.Transparency = 1
+    Hitbox.Anchored = false  -- Don't anchor the hitbox part
+    Hitbox.Parent = workspace.Thrown
+    Hitbox.Massless = true
+    local weld = Instance.new("Weld", workspace.Thrown)
+    weld.Part0 = Hitbox
+    weld.Part1 = primaryPart
+    Debris:AddItem(Hitbox, 5)
+    Debris:AddItem(weld, 5)
+    spawn(function()
+        wait(0.5)
+        Hitbox:Destroy()
+        weld:Destroy()
+    end)
+
+    local hasHit = false
+    Hitbox.Touched:Connect(function(hit)
+        if Hitted ~= nil or hasHit then return end
+        hasHit = true
+        if hit.Parent and hit.Parent:FindFirstChild("Humanoid") and hit.Parent ~= character then
+            local fakeHitted = hit.Parent
+            Hitted = fakeHitted
+            if Hitted:FindFirstChild("AbsoluteImmortal") then
+                return
+            end
+            if not Hitted:FindFirstChild("Humanoid") then
+                return
+            end
+            Hitted:SetAttribute('Ragdolled', false)
+
+            local HPrimaryPart = Hitted.PrimaryPart
+            local HHumanoid = Hitted.Humanoid
+            primaryPart.Anchored = false
+
+            humanoid.AutoRotate = true
+            HHumanoid.AutoRotate = true
+
+            shared.repfire({
+                Effect = "RagdollEffect",
+                Character = Hitted
+            })
+
+            HHumanoid:TakeDamage(5)
+
+            shared.repfire({
+                Effect = "ForcePush",
+                Character = Hitted,
+                Strength = 50
+            })
+
+            spawn(function()
+                wait(.1)
+                HPrimaryPart.Anchored = false
+            end)
+
+            spawn(function()
+                local targetCFrame = primaryPart.CFrame * CFrame.new(0, 0, -2.15) * CFrame.Angles(0, math.rad(180), 0)
+                local alpha = 0.2
+
+                while (HPrimaryPart.CFrame.Position - targetCFrame.Position).Magnitude > 0.1 do
+                    HPrimaryPart.CFrame = HPrimaryPart.CFrame:Lerp(targetCFrame, alpha)
+                    wait(0)
+                end
+            end)
+
+            local RavageLanded = Instance.new("Animation")
+            RavageLanded.AnimationId = "rbxassetid://16945550029"
+            local RavageLandedTrack = humanoid:LoadAnimation(RavageLanded)
+            RavageLandedTrack:Play()
+            RavageStartTrack:Stop()
+
+            local RavageVictim = Instance.new("Animation")
+            RavageVictim.AnimationId = "rbxassetid://16945557433"
+            local RavageVictimTrack = HHumanoid:LoadAnimation(RavageVictim)
+            RavageVictimTrack:Play()
+
+task.spawn(function()
+local function GetGitSound(GithubSnd, SoundName)
+    local url = GithubSnd  
+    if not isfile(SoundName..".mp3") then  
+        writefile(SoundName..".mp3", game:HttpGet(url))
+    end  
+    local sound = Instance.new("Sound")
+    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
+    return sound  
+end  
+
+local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241228152126.mp3?raw=true", "goofyravage")
+
+Clock.Parent = workspace  
+Clock.Volume = 1  
+Clock.TimePosition = 0
+
+Clock:Play()
+end)
+
+player:SetAttribute("Ultimate", 1)
+
+
+
+            RavageLandedTrack:AdjustSpeed(1)
+            RavageVictimTrack:AdjustSpeed(1)
+
+            shared.repfire({
+                Effect = "KJJumpBack",
+                Character = character
+            })
+
+            local count = 0
+
+            RavageLandedTrack:GetMarkerReachedSignal("BodyStrike"):Connect(function()
+                HHumanoid:TakeDamage(0.15)
+                if count < 2 then
+                    count += 1
+                    shared.repfire({
+                        Effect = "KJPunch",
+                        Character = character,
+                        Start = HPrimaryPart.CFrame * CFrame.Angles(0, 0, math.rad(180)),
+                        MeshImpactOffset = Hitted.Torso.CFrame * CFrame.Angles(0, 0, math.rad(180)),
+                        DustOffset = primaryPart.CFrame
+                    })
+                    HHumanoid:TakeDamage(4)
+local player = game.Players.LocalPlayer
+player:SetAttribute("Ultimate", 4)
+
+local startValue = 4
+local endValue = 8
+local duration = 1.2
+local increment = 0.1
+local steps = (endValue - startValue) / increment
+local stepTime = duration / steps
+
+for i = startValue, endValue, increment do
+    player:SetAttribute("Ultimate", i)
+    task.wait(stepTime)
+end
+
+player:SetAttribute("Ultimate", endValue)
+
+                end
+            end)
+
+            RavageLandedTrack:GetMarkerReachedSignal("BarageStart"):Connect(function()
+                local barrage = ReplicatedStorage.Resources.KJEffects.barrage:Clone()
+                barrage.Parent = workspace.Thrown
+                barrage.CFrame = Hitted.Torso.CFrame
+                barrage.Anchored = false
+
+                local weld1 = Instance.new("ManualWeld", workspace.Thrown)
+                weld1.Part0 = Hitted.Torso
+                weld1.Part1 = barrage
+                weld1.C0 = CFrame.new(0, -0.5, 0.5) * CFrame.Angles(35, math.rad(0), 50)
+
+                for i, v in barrage:GetDescendants() do
+                    if v:IsA("ParticleEmitter") then
+                        v.Enabled = true
+                    end
+                end
+                wait(1.2)
+player:SetAttribute("Ultimate", 8)
+
+                for i, v in barrage:GetDescendants() do
+                    if v:IsA("ParticleEmitter") then
+                        v.Enabled = false
+                    end
+                end
+
+                wait(2)
+                barrage:Destroy()
+                weld1:Destroy()
+            end)
+
+            RavageLandedTrack:GetMarkerReachedSignal("Uppercut"):Connect(function()
+                shared.repfire({
+                    Effect = "KJUppercut",
+                    Character = character,
+                    CF = HPrimaryPart.CFrame,
+                    ShowaveCF = HPrimaryPart.CFrame * CFrame.new(0, 8, 0) * CFrame.Angles(0, 0, math.rad(90))
+                })
+                HHumanoid:TakeDamage(3.25)
+player:SetAttribute("Ultimate", 11)
+            end)
+
+            RavageLandedTrack:GetMarkerReachedSignal("DoSpin"):Connect(function()
+                shared.repfire({
+                    Effect = "KJSpin",
+                    Character = character,
+                    SpinParticlesOffset = primaryPart.CFrame,
+                    BeamOffset = primaryPart.CFrame * CFrame.new(0, -2, 13.5)
+                })
+            end)
+
+            spawn(function()
+                wait(4.34)
+                local LegLef = ReplicatedStorage.Resources.KJEffects["Left Leg"]:Clone()
+                LegLef.Parent = Thrown
+                LegLef.Transparency = 1
+                LegLef.CFrame = character["Left Leg"].CFrame
+
+                local LegLefweld = Instance.new("Weld", workspace)
+                LegLefweld.Part0 = LegLef
+                LegLefweld.Part1 = character["Left Leg"]
+                Debris:AddItem(LegLefweld, 0.7)
+                Debris:AddItem(LegLef, 0.7)
+            end)
+
+            RavageLandedTrack:GetMarkerReachedSignal("KickImpact"):Connect(function()
+                shared.repfire({
+                    Effect = "KJKick",
+                    Character = character,
+                    ParticleOffset = HPrimaryPart.CFrame,
+                    MeshOffset = primaryPart.CFrame * CFrame.Angles(0, math.rad(-90), 0)
+                })
+                local BOOM = shared.sfx({
+                    SoundId = "rbxassetid://16945723339",
+                    Volume = 1,
+                    Parent = character.PrimaryPart
+                })
+                BOOM:Resume()
+                HHumanoid:TakeDamage(6)
+player:SetAttribute("Ultimate", 17)
+            end)
+
+            RavageLandedTrack:GetMarkerReachedSignal("Kick"):Connect(function()
+                HHumanoid:TakeDamage(3.5)
+
+                primaryPart.Anchored = false
+                HPrimaryPart.Anchored = false
+
+                humanoid.AutoRotate = true
+                HHumanoid.AutoRotate = true
+
+                local BodyV = Instance.new("BodyVelocity", HPrimaryPart)
+                BodyV.MaxForce = Vector3.new(1, 1, 1) * 100_000_000
+                if Hitted.Humanoid.Health < 15 or Hitted.Humanoid.Health == 15 then
+                    BodyV.Velocity = humanoid.RootPart.CFrame.LookVector * 300 + humanoid.RootPart.CFrame.UpVector * 100
+                    shared.repfire({
+                        Effect = "Wall Collision",
+                        root = Hitted.PrimaryPart,
+                        NoCrater = "skysnatcher",
+                        nosound = false,
+                        stronger = 100,
+                        Seed = math.random(100, 500)
+                    })
+
+                    Hitted.Humanoid.Health = 0
+                else
+                    BodyV.Velocity = humanoid.RootPart.CFrame.LookVector * 55 + humanoid.RootPart.CFrame.UpVector * 30
+                end
+                Debris:AddItem(BodyV, 0.1)
+
+                if attacking and Freeze then
+                    attacking:Destroy()
+                    Freeze:Destroy()
+                    primaryPart.Anchored = false
+                    wait(0.5)
+                end
+            end)
+        end
+    end)
+end)
+
+RavageStartTrack.Ended:Connect(function()
+    attacking:Destroy()
+    Freeze:Destroy()
+    primaryPart.Anchored = false
+end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Ohio Rizz Kick"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 2
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+local soundeffect = Instance.new("Sound")
+soundeffect.SoundId = "rbxassetid://16944636115"
+soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
+soundeffect:Play()
+soundeffect.Volume = 1
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local replicatedStorage = game:GetService("ReplicatedStorage")
+local debris = game:GetService("Debris")
+local players = game:GetService("Players")
+local tweenService = game:GetService("TweenService")
+
+local Replication = replicatedStorage.Replication
+
+local variant = false
+local Character = game.Players.LocalPlayer.Character
+local Humanoid = Character:FindFirstChildWhichIsA("Humanoid")
+local RootPart = Humanoid.RootPart
+local Torso = Character.Torso
+
+local Player = players:GetPlayerFromCharacter(Character)
+
+local Grab = Instance.new("Animation")
+Grab.AnimationId = "rbxassetid://16944265635"
+local Hit = Instance.new("Animation")
+Hit.AnimationId = "rbxassetid://16944345619"
+
+local freeze = Instance.new("Accessory", Character)
+freeze.Name = "Freeze"
+freeze:SetAttribute("NoStop", true)
+
+local attacking = Instance.new("Accessory", Character)
+attacking.Name = "attacking"
+
+local GrabTrack = Humanoid:LoadAnimation(Grab)
+local HitTrack = Humanoid:LoadAnimation(Hit)
+Grab.AnimationId = "rbxassetid://0"
+
+Hit.AnimationId = "rbxassetid://0"
+local hitList = {}
+variant = false
+
+GrabTrack:GetMarkerReachedSignal("StartSweepEffects"):Connect(function()
+    shared.repfire({Effect = "Swift Sweep", Character = Character})
+end)
+
+GrabTrack:GetMarkerReachedSignal("Hitbox"):Connect(function()
+    attacking:Destroy()
+    freeze:Destroy()
+    local Hitbox = Instance.new("Part")
+    Hitbox.Size = Vector3.new(4, 5, 4)
+    Hitbox.Transparency = 1
+    Hitbox.Anchored = false
+    Hitbox.CanCollide = false
+    Hitbox.Parent = workspace.Thrown
+    Hitbox.Massless = true
+    Hitbox.CFrame = RootPart.CFrame
+
+    local Weld = Instance.new("Weld", Hitbox)
+    Weld.Part0 = Hitbox
+    Weld.Part1 = Humanoid.RootPart
+
+    Weld.C1 = CFrame.new(0, 0, -3)
+
+    debris:AddItem(Hitbox, 0.2)
+
+    for _, v in pairs(workspace:GetPartsInPart(Hitbox)) do
+        if v.Parent:FindFirstChild("Humanoid") and v.Parent ~= Character then
+            if v.Parent:FindFirstChild("Hit by:" .. Character.Name) == nil then
+                local Target = v.Parent
+                local THumanoid = Target.Humanoid
+                if Target:FindFirstChild("AbsoluteImmortal") then
+                    return
+                end
+                if not Target:FindFirstChild("Humanoid") then
+                    return
+                end
+
+                Target:SetAttribute('Ragdolled', false)
+
+                local victimAnimation = Instance.new("Animation")
+                victimAnimation.AnimationId = "rbxassetid://16944744186"
+                local victimTrack = Target.Humanoid:LoadAnimation(victimAnimation)
+                victimTrack:Play()
+                victimTrack:AdjustSpeed(1)
+
+                local x = Instance.new("Accessory", Target)
+                x.Name = "Hit by:" .. Character.Name
+                debris:AddItem(x, 0.2)
+                THumanoid.RootPart.CFrame = CFrame.lookAt(THumanoid.RootPart.Position, Humanoid.RootPart.Position)
+
+                shared.repfire({Effect = "Swift Sweep", Character = Character, Hit = Target})
+
+                THumanoid:TakeDamage(3)
+player:SetAttribute("Ultimate", 3)
+
+local soundeffect = Instance.new("Sound")
+soundeffect.SoundId = "rbxassetid://16944654440"
+soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
+soundeffect:Play()
+soundeffect.Volume = 1
+
+                GrabTrack:Stop()
+
+                Character:SetAttribute("Combo", 0)
+
+                HitTrack:Play()
+                HitTrack:AdjustSpeed(1)
+                HitTrack.Ended:Connect(function()
+                    if attacking and freeze then
+                        attacking:Destroy()
+                        freeze:Destroy()
+                    end
+                end)
+
+                HitTrack:GetMarkerReachedSignal("Hit"):Connect(function()
+                    local Hitbox = Instance.new("Part")
+                    Hitbox.Size = Vector3.new(4, 5, 4)
+                    Hitbox.Transparency = 1
+                    Hitbox.Anchored = false
+                    Hitbox.CanCollide = false
+                    Hitbox.Parent = workspace.Thrown
+                    Hitbox.Massless = true
+                    Hitbox.CFrame = RootPart.CFrame
+
+                    local Weld = Instance.new("Weld", Hitbox)
+                    Weld.Part0 = Hitbox
+                    Weld.Part1 = Humanoid.RootPart
+
+                    Weld.C1 = CFrame.new(0, 0, -3)
+
+                    debris:AddItem(Hitbox, 0.2)
+
+                    for _, v in pairs(workspace:GetPartsInPart(Hitbox)) do
+                        if v.Parent:FindFirstChild("Humanoid") and v.Parent ~= Character and not v.Parent:FindFirstChild("IFrame") then
+                            if v.Parent:FindFirstChild("Hit by:" .. Character.Name) == nil then
+                                local Target = v.Parent
+                                local THumanoid = Target.Humanoid
+
+                                if Target:FindFirstChild("AbsoluteImmortal") then
+                                    return
+                                end
+                                if not Target:FindFirstChild("Humanoid") then
+                                    return
+                                end
+                                Target:SetAttribute('Ragdolled', false)
+
+                                local x = Instance.new("Accessory", Target)
+                                x.Name = "Hit by:" .. Character.Name
+                                debris:AddItem(x, 0.2)
+
+                                THumanoid.RootPart.CFrame = CFrame.lookAt(THumanoid.RootPart.Position, Humanoid.RootPart.Position)
+
+                                if Target:GetAttribute("Ragdolled", true) then
+                                    variant = true
+                                    Target:GetAttribute("Ragdolled", false)
+                                end
+
+                                shared.repfire({Effect = "Backhand", Look = Target.PrimaryPart})
+
+                                local victimAnimation = Instance.new("Animation")
+                                victimAnimation.AnimationId = "rbxassetid://10471478869"
+                                local victimTrack = Target.Humanoid:LoadAnimation(victimAnimation)
+                                victimTrack:Play()
+                                victimTrack:AdjustSpeed(1)
+
+local soundeffect = Instance.new("Sound")
+soundeffect.SoundId = "rbxassetid://16944654157"
+soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
+soundeffect:Play()
+soundeffect.Volume = 1
+
+local soundeffect = Instance.new("Sound")
+soundeffect.SoundId = "rbxassetid://10471418545"
+soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
+soundeffect:Play()
+soundeffect.Volume = 1
+
+local soundeffect = Instance.new("Sound")
+soundeffect.SoundId = "rbxassetid://10471421218"
+soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
+soundeffect:Play()
+soundeffect.Volume = 1
+
+player:SetAttribute("Ultimate", 4)
+
+                                local TargetAnimation = Target.Humanoid:LoadAnimation(game.ReplicatedStorage.Assets.Animations.Extra.Knockback)
+                                local BodyVelocity = Instance.new("BodyVelocity", Target.PrimaryPart)
+                                BodyVelocity.MaxForce = Vector3.new(1, 0, 1) * 100_000
+                                BodyVelocity.Velocity = Target.PrimaryPart.CFrame.LookVector * -40
+
+                                TargetAnimation:GetMarkerReachedSignal("landed"):Connect(function()
+                                    BodyVelocity:Destroy()
+                                end)
+
+                                Target.Humanoid:TakeDamage(4)
+
+                                TargetAnimation:Play()
+                                TargetAnimation:AdjustSpeed(1)
+                                HitTrack.Ended:Connect(function()
+                                    if attacking and freeze then
+                                        attacking:Destroy()
+                                        freeze:Destroy()
+                                    end
+                                end)
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end
+end)
+
+GrabTrack:Play()
+GrabTrack:AdjustSpeed(1)
+GrabTrack.Ended:Connect(function()
+    if attacking and freeze then
+        attacking:Destroy()
+        freeze:Destroy()
+    end
+end)
+
+GrabTrack.Stopped:Connect(function()
+    if attacking and freeze then
+        attacking:Destroy()
+        freeze:Destroy()
+    end
+end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Diddy Beam"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 3
+local cooldownTime = 15
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+local function GetGitSound(GithubSnd, SoundName)
+    local url = GithubSnd  
+    if not isfile(SoundName..".mp3") then  
+        writefile(SoundName..".mp3", game:HttpGet(url))
+    end  
+    local sound = Instance.new("Sound")
+    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
+    return sound  
+end  
+
+local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241228165200.mp3?raw=true", "goofyahhuncle2")
+
+Clock.Parent = workspace  
+Clock.Volume = 1  
+Clock.TimePosition = 0
+
+Clock:Play()
+end)
+
+task.spawn(function()
+task.spawn(function()
+local anm = 17325254223
+local a = Instance.new("Animation")
+a.AnimationId = "rbxassetid://" .. anm
+local e = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(a)
+e:Play()
+
+local l_char_7 = game.Players.LocalPlayer.Character
+local l_Collat_0 = game.ReplicatedStorage.Resources.Collat
+local l_timeScale_0 = 1
+local v2388 = {}
+local l_seed_0 = ""
+
+local function exp()
+    task.delay(0, function()
+        for _, v2391 in pairs(l_char_7.HumanoidRootPart["Spin" .. l_seed_0]:GetDescendants()) do
+            if v2391:IsA("ParticleEmitter") then
+                v2391.Enabled = false
+                v2391.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set to cyan
+            end
+        end
+
+        local l_TweenService_13 = game:GetService("TweenService")
+        local l_Thrown_9 = workspace.Thrown
+        local v2394 = l_Collat_0.ExplosionCharged:Clone()
+        task.delay(5, function()
+            v2394:Destroy()
+        end)
+
+        local l_Wind_0 = v2394.Wind
+        l_TweenService_13:Create(l_Wind_0, TweenInfo.new(3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Orientation = l_Wind_0.Orientation + Vector3.new(0, 100, 0)
+        }):Play()
+
+        local l_PointLight_2 = v2394.RootPos.Attachment.PointLight
+        l_PointLight_2.Enabled = true
+        l_TweenService_13:Create(l_PointLight_2, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+            Brightness = 0, 
+            Range = 20
+        }):Play()
+
+        task.spawn(function()
+            local l_Decal_79 = v2394.Floor.Decal
+            l_Decal_79.Transparency = 0
+            task.wait(0.1)
+            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(0.85, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                Color3 = Color3.fromRGB(0, 0, 0)
+            }):Play()
+            task.wait(0.5)
+            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+                Transparency = 1
+            }):Play()
+        end)
+
+        for _, v2399 in pairs(v2394:GetDescendants()) do
+            if v2399:IsA("ParticleEmitter") then
+                v2399.Color = ColorSequence.new(Color3.fromRGB(0, 255, 255)) -- Set to cyan
+                v2399:Emit(v2399:GetAttribute("EmitCount"))
+            end
+        end
+
+        v2394:SetPrimaryPartCFrame(l_char_7.HumanoidRootPart.CFrame)
+        v2394.Parent = l_Thrown_9
+
+        task.spawn(function()
+            local l_Beams_0 = v2394.Beams
+            local l_RedDots_0 = v2394.RedDots
+            local l_BigRed_0 = v2394.BigRed
+
+            for _, v2404 in pairs(l_Beams_0:GetDescendants()) do
+                if v2404:IsA("Beam") then
+                    v2404.Enabled = true
+                    v2404.TextureSpeed = v2404.TextureSpeed * Random.new():NextNumber(2, 2.5)
+                    task.delay(0.065, function()
+                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                            TextureSpeed = -0.2
+                        }):Play()
+                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
+                            Brightness = 0
+                        }):Play()
+                    end)
+                end
+            end
+
+            for _, v2406 in pairs(l_RedDots_0:GetDescendants()) do
+                if v2406:IsA("Beam") then
+                    v2406.Enabled = true
+                    v2406.TextureSpeed = v2406.TextureSpeed * Random.new():NextNumber(2, 2.25)
+                    l_TweenService_13:Create(v2406, TweenInfo.new(2.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                        TextureSpeed = -0.5
+                    }):Play()
+                    task.delay(1.5, function()
+                        l_TweenService_13:Create(v2406, TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
+                            Brightness = 0, 
+                            LightEmission = 1
+                        }):Play()
+                    end)
+                end
+            end
+
+            for _, v2408 in pairs(l_BigRed_0:GetDescendants()) do
+                if v2408:IsA("Beam") then
+                    v2408.Enabled = true
+                    v2408.TextureSpeed = v2408.TextureSpeed * Random.new():NextNumber(1.2, 1.6)
+                    l_TweenService_13:Create(v2408, TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                        TextureSpeed = -1, 
+                        Width1 = 70
+                    }):Play()
+                    task.delay(0.6, function()
+                        l_TweenService_13:Create(v2408, TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
+                            Brightness = 0, 
+                            LightEmission = 1
+                        }):Play()
+                    end)
+                end
+            end
+        end)
+    end)
+end
+
+task.delay(1.5, function()
+    exp()
+    local s = Instance.new("Sound", game.Players.LocalPlayer.Character.PrimaryPart)
+    s.SoundId = "rbxassetid://72000489811842"
+    s:Play()
+    s.Volume = 0
+end)
+
+local s = Instance.new("Sound", game.Players.LocalPlayer.Character.PrimaryPart)
+s.SoundId = "rbxassetid://74376324560435"
+s:Play()
+s.Volume = 0
+end)
+task.spawn(function()
+local anm = 17325254223
+local a = Instance.new("Animation")
+a.AnimationId = "rbxassetid://" .. anm
+local e = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(a)
+e:Play()
+
+local l_char_7 = game.Players.LocalPlayer.Character
+local l_Collat_0 = game.ReplicatedStorage.Resources.Collat
+local l_timeScale_0 = 1
+local v2388 = {}
+local l_seed_0 = ""
+
+local function exp()
+    task.delay(0, function()
+        for _, v2391 in pairs(l_char_7.HumanoidRootPart["Spin" .. l_seed_0]:GetDescendants()) do
+            if v2391:IsA("ParticleEmitter") then
+                v2391.Enabled = false
+            end
+        end
+
+        local l_TweenService_13 = game:GetService("TweenService")
+        local l_Thrown_9 = workspace.Thrown
+        local v2394 = l_Collat_0.ExplosionCharged:Clone()
+
+        task.delay(5, function()
+            v2394:Destroy()
+        end)
+
+        local l_Wind_0 = v2394.Wind
+        l_TweenService_13:Create(l_Wind_0, TweenInfo.new(3, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+            Orientation = l_Wind_0.Orientation + Vector3.new(0, 100, 0, 0)
+        }):Play()
+
+        local l_PointLight_2 = v2394.RootPos.Attachment.PointLight
+        l_PointLight_2.Enabled = true
+        l_TweenService_13:Create(l_PointLight_2, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), {
+            Brightness = 0,
+            Range = 20
+        }):Play()
+
+        task.spawn(function()
+            local l_Decal_79 = v2394.Floor.Decal
+            l_Decal_79.Transparency = 0
+            task.wait(0.1)
+            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(0.85, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                Color3 = Color3.fromRGB(0, 0, 255)  -- Set color to blue
+            }):Play()
+            task.wait(0.5)
+            l_TweenService_13:Create(l_Decal_79, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.In), {
+                Transparency = 1
+            }):Play()
+        end)
+
+        for _, v2399 in pairs(v2394:GetDescendants()) do
+            if v2399:IsA("ParticleEmitter") then
+                -- Change particle color to blue
+                local emitter = v2399
+                emitter.Color = ColorSequence.new(Color3.fromRGB(0, 0, 255))  
+                emitter:Emit(emitter:GetAttribute("EmitCount"))
+            end
+        end
+
+        v2394:SetPrimaryPartCFrame(l_char_7.HumanoidRootPart.CFrame)
+        v2394.Parent = l_Thrown_9
+
+        task.spawn(function()
+            local l_Beams_0 = v2394.Beams
+            local l_RedDots_0 = v2394.RedDots
+            local l_BigRed_0 = v2394.BigRed
+
+            for _, v2404 in pairs(l_Beams_0:GetDescendants()) do
+                if v2404:IsA("Beam") then
+                    v2404.Enabled = true
+                    v2404.TextureSpeed = v2404.TextureSpeed * Random.new():NextNumber(2, 2.5)
+                    task.delay(0.065, function()
+                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                            TextureSpeed = -0.2
+                        }):Play()
+                        l_TweenService_13:Create(v2404, TweenInfo.new(2, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
+                            Brightness = 0
+                        }):Play()
+                    end)
+                end
+            end
+
+            for _, v2406 in pairs(l_RedDots_0:GetDescendants()) do
+                if v2406:IsA("Beam") then
+                    v2406.Enabled = true
+                    v2406.TextureSpeed = v2406.TextureSpeed * Random.new():NextNumber(2, 2.25)
+                    l_TweenService_13:Create(v2406, TweenInfo.new(2.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                        TextureSpeed = -0.5
+                    }):Play()
+                    task.delay(1.5, function()
+                        l_TweenService_13:Create(v2406, TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
+                            Brightness = 0,
+                            LightEmission = 1
+                        }):Play()
+                    end)
+                end
+            end
+
+            for _, v2408 in pairs(l_BigRed_0:GetDescendants()) do
+                if v2408:IsA("Beam") then
+                    v2408.Enabled = true
+                    v2408.TextureSpeed = v2408.TextureSpeed * Random.new():NextNumber(1.2, 1.6)
+                    l_TweenService_13:Create(v2408, TweenInfo.new(1, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                        TextureSpeed = -1,
+                        Width1 = 70
+                    }):Play()
+                    task.delay(0.6, function()
+                        l_TweenService_13:Create(v2408, TweenInfo.new(0.4, Enum.EasingStyle.Cubic, Enum.EasingDirection.InOut), {
+                            Brightness = 0,
+                            LightEmission = 1
+                        }):Play()
+                    end)
+                end
+            end
+        end)
+    end)
+    return
+end
+
+local v2409 = nil
+for _, v2411 in pairs(l_char_7.Humanoid:GetPlayingAnimationTracks()) do
+    if v2411.Animation.AnimationId == "rbxassetid://17325254223" then
+        v2409 = v2411
+        break
+    end
+end
+
+local v2412 = {}
+for _, v2414 in pairs(l_Collat_0:GetChildren()) do
+    if v2414:IsA("Part") then
+        local l_l_char_7_FirstChild_0 = l_char_7:FindFirstChild(v2414.Name)
+        if l_l_char_7_FirstChild_0 then
+            if not v2412[l_l_char_7_FirstChild_0.Name] then
+                v2412[l_l_char_7_FirstChild_0.Name] = {}
+            end
+            for _, v2417 in pairs(v2414:GetChildren()) do
+                local v2418 = v2417:Clone()
+                v2418.Name = v2418.Name .. l_seed_0
+                v2418.Parent = l_l_char_7_FirstChild_0
+                table.insert(v2388, v2418)
+                v2412[l_l_char_7_FirstChild_0.Name][v2418.Name] = v2417
+            end
+        end
+    end
+end
+
+local l_v2388_0 = v2388
+local l_v2412_0 = v2412
+task.delay(6, function()
+    for _, v2422 in pairs(l_v2388_0) do
+        v2422:Destroy()
+    end
+    table.clear(l_v2388_0)
+    table.clear(l_v2412_0)
+end)
+
+local l_l_char_7_0 = l_char_7
+local l_l_seed_0_0 = l_seed_0
+table.insert(v2388, v2409.Stopped:Connect(function()
+    for _, v2426 in pairs(l_l_char_7_0.HumanoidRootPart["Spin" .. l_l_seed_0_0]:GetDescendants()) do
+        if v2426:IsA("ParticleEmitter") then
+            v2426.Enabled = false
+        end
+    end
+end))
+
+local l_l_Collat_0_0 = l_Collat_0
+task.delay(0.48, function()
+    for _, v2429 in pairs(l_l_char_7_0.HumanoidRootPart["WindupEmit" .. l_l_seed_0_0]:GetDescendants()) do
+        if v2429:IsA("ParticleEmitter") then
+            v2429:Emit(v2429:GetAttribute("EmitCount"))
+        end
+    end
+    local l_TweenService_14 = game:GetService("TweenService")
+    local _ = l_l_Collat_0_0.CollateralFX
+    local l_Thrown_10 = workspace.Thrown
+
+    task.spawn(function()
+        local function v2435()
+            for _, v2434 in pairs(l_l_char_7_0.Torso["TorsoWindup" .. l_l_seed_0_0]:GetDescendants()) do
+                if v2434:IsA("ParticleEmitter") then
+                    v2434:Emit(v2434:GetAttribute("EmitCount"))
+                end
+            end
+        end
+        v2435()
+        task.wait(0.07)
+        v2435()
+        task.wait(0.07)
+        v2435()
+        task.wait(0.07)
+    end)
+
+    local v2436 = l_l_Collat_0_0.WindupWind:Clone()
+    v2436:PivotTo(l_l_char_7_0.PrimaryPart.CFrame * CFrame.new(0, 0, -1.22070312E-4, 1, 4.41075736E-6, -1.19208789E-6, -4.41075235E-6, 1, 3.93391656E-6, 1.19210517E-6, -3.93391065E-6, 1))
+    v2436.Parent = workspace.Thrown
+
+    for _, v2438 in pairs(v2436:GetDescendants()) do
+        if v2438:IsA("ParticleEmitter") then
+            v2438:Emit(v2438:GetAttribute("EmitCount"))
+        end
+    end
+
+    task.spawn(function()
+        local l_Wind_1 = v2436.Wind
+        l_TweenService_14:Create(l_Wind_1, TweenInfo.new(1.6, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
+            Orientation = l_Wind_1.Orientation + Vector3.new(0, -180, 0, 0)
+        }):Play()
+    end)
+
+    v2436:SetPrimaryPartCFrame(l_l_char_7_0.HumanoidRootPart.CFrame)
+    v2436.Parent = l_Thrown_10
+
+    task.delay(5, function()
+        v2436:Destroy()
+    end)
+
+    task.spawn(function()
+        local l_Start_39 = v2436.WindWave.Start
+        local l_End_39 = v2436.WindWave.End
+        l_Start_39.Decal.Transparency = 0.72
+        l_TweenService_14:Create(l_Start_39, TweenInfo.new(0.85, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+            CFrame = l_End_39.CFrame
+        }):Play()
+        l_TweenService_14:Create(l_Start_39.Mesh, TweenInfo.new(0.85, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
+            Scale = l_End_39.Mesh.Scale
+        }):Play()
+        l_TweenService_14:Create(l_Start_39.Decal, TweenInfo.new(0.85, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+            Transparency = 1
+        }):Play()
+    end)
+
+    task.spawn(function()
+        local l_Start_40 = v2436.WindPillar.Start
+        local l_End_40 = v2436.WindPillar.End
+        l_Start_40.Decal.Transparency = 0.72
+        l_TweenService_14:Create(l_Start_40, TweenInfo.new(0.75, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
+            CFrame = l_End_40.CFrame
+        }):Play()
+        l_TweenService_14:Create(l_Start_40.Mesh, TweenInfo.new(0.75, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out), {
+            Scale = l_End_40.Mesh.Scale
+        }):Play()
+        l_TweenService_14:Create(l_Start_40.Decal, TweenInfo.new(0.75, Enum.EasingStyle.Sine, Enum.EasingDirection.Out), {
+            Transparency = 1
+        }):Play()
+    end)
+end)
+
+task.delay(0.65, function()
+    for _, v2440 in pairs(l_char_7.Humanoid:GetPlayingAnimationTracks()) do
+        if v2440.Animation.AnimationId == "rbxassetid://12447707844" then
+            v2440:Stop()
+        end
+    end
+end)
+end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Spiraling Rizz"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 4
+local cooldownTime = 15
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+local function GetGitSound(GithubSnd, SoundName)
+    local url = GithubSnd  
+    if not isfile(SoundName..".mp3") then  
+        writefile(SoundName..".mp3", game:HttpGet(url))
+    end  
+    local sound = Instance.new("Sound")
+    sound.SoundId = (getcustomasset or getsynasset)(SoundName..".mp3")
+    return sound  
+end  
+
+local Clock = GetGitSound("https://github.com/VonexuryRemaker/kj-sounds/blob/main/lv_0_20241228172401.mp3?raw=true", "boiwatdahail")
+
+Clock.Parent = workspace  
+Clock.Volume = 2  
+Clock.TimePosition = 0
+
+Clock:Play()
+end)
+
+task.spawn(function()
+local player = game.Players.LocalPlayer
+repeat wait() until player.Character and player.Character.Humanoid
+local humanoid = player.Character:WaitForChild("Humanoid")
+
+local anim = Instance.new("Animation")
+anim.AnimationId = "rbxassetid://78521642007560"
+
+local kjcounterstartup = humanoid:LoadAnimation(anim)
+anim.AnimationId = "rbxassetid://0"
+kjcounterstartup:Play()
+
+local kj = Instance.new("Sound")
+kj.SoundId = "rbxassetid://72864971245980"
+kj.Parent = game.Players.LocalPlayer.Character.Torso
+kj:Play()
+kj.Volume = 1
+
+task.spawn(function()
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+wait(1)
+game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+end)
+    end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+   
+                shared.repfire({
+                    Effect = "DropkickWholeMoveSequence",
+                    char = character,
+                    hit = Hitted,
+                    Bind = Hitted,
+                    humanoid = Humanoid,
+                    ogrootcfr = PrimaryPart.CFrame,
+                    CameraPart = CameraPart
+                })
+    
+                HPrimaryPart.CFrame = PrimaryPart.CFrame * CFrame.new(0, 0, -10) * CFrame.Angles(0, math.rad(180), 0)
+    
+                for _, v in pairs(Humanoid:GetPlayingAnimationTracks()) do
+                    v:Stop()
+                end
+    
+                for _, v in pairs(Hitted.Humanoid:GetPlayingAnimationTracks()) do
+                    v:Stop()
+                end
+    
+                PrimaryPart.Anchored = true
+                Hitted.PrimaryPart.Anchored = true
+    
+                local animation = Instance.new("Animation")
+                animation.AnimationId = "rbxassetid://17420452843"
+                local animation2 = Instance.new("Animation")
+                animation2.AnimationId = "rbxassetid://17363256069"
+                local track = Humanoid:LoadAnimation(animation)
+                animation.AnimationId = "rbxassetid://0"
+                local track2 = Hitted.Humanoid:LoadAnimation(animation2)
+                 animation2.AnimationId = "rbxassetid://0"
+                track:Play()
+                track2:Play()
+    
+                track3:Stop()
+    
+                track:GetMarkerReachedSignal("StartCameraAmbience"):Connect(function()					
+                    local DASH = shared.sfx({
+                        SoundId = "rbxassetid://17419337758",
+                        Parent = workspace,
+                        Volume = 6
+                    })
+                    DASH:Resume()
+                    wait(0.15)
+                    
+                    shared.repfire({
+                        Effect = "kjclientstuff2",
+                        char = character,
+                        Blacklist = {character,Hitted}
+                    })
+    
+                    shared.repfire({
+                        Effect = "kjclientstuff",
+                        char = character,
+                        Blacklist = { character, Hitted }
+                    })
+                end)
+    
+                track:GetMarkerReachedSignal("Fling"):Connect(function()
+                    Hitted.Humanoid.Health = 0
+            
+    
+                    shared.repfire({
+                        Effect = "Wall Collision", 
+                        root = Hitted.PrimaryPart, 
+                        NoCrater = "skysnatcher",
+                        nosound = false, 
+                        stronger = 100,
+                        Seed = math.random(100,500)
+                    })
+                    
+                    wait(0.1)
+                    local BodyV = Instance.new("BodyVelocity", HPrimaryPart)
+                    BodyV.MaxForce = Vector3.new(1, 1, 1) * 100_000_000
+                    BodyV.Velocity = HPrimaryPart.CFrame.LookVector * -300 + HPrimaryPart.CFrame.UpVector * 80
+                    Debris:AddItem(BodyV, 0.5)
+                    
+                    local Ragdoll = Instance.new("Accessory")
+                    Ragdoll.Parent = Hitted
+                    Ragdoll.Name = "Ragdoll"
+                    Debris:AddItem(Ragdoll, 3)
+                    wait(4)
+                    Hitted:Destroy()
+                end)
+    
+                track:GetMarkerReachedSignal("KickTp"):Connect(function()
+                    shared.repfire({
+                        Effect = "Camshake", 
+                        Intensity = 5
+                    })
+                    
+                    HPrimaryPart.CFrame = PrimaryPart.CFrame
+    
+                    player:SetAttribute("Ultimate", 50)
+    
+                    
+    
+                    if character:FindFirstChild("HideUlt") then
+                        character.HideUlt:Destroy()
+                    end
+    
+                    PrimaryPart.Anchored = false
+                    Hitted.PrimaryPart.Anchored = false
+                    character:SetAttribute("UsingUltimate", false)
+                    Freeze:Destroy()
+                    CameraPart:Destroy()
+                end)
+    
+                task.delay(0.1, function()
+                    debounce = false
+                end)
+            end
+    
+            Hitbox.Touched:Connect(onTouch)
+    
+            local region = Region3.new(Hitbox.Position - Hitbox.Size, Hitbox.Position + Hitbox.Size)
+            local partsInRegion = workspace:FindPartsInRegion3(region, nil, math.huge)
+            for _, part in ipairs(partsInRegion) do
+                if part.Parent:FindFirstChild("Humanoid") and part.Parent ~= character then
+                    onTouch(part)
+                end
+            end
+    
+            Hitbox.Touched:Wait()
+        end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "2 Seasonings"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 1
+local cooldownTime = 20
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+sound:Stop()
+end)
+
+task.spawn(function()
+wait(0.9)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function deleteInventory()
+    for _, tool in pairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+end
+
+deleteInventory()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    deleteInventory()
+end)
+end)
+
+task.spawn(function()
+wait(20.7)
+player:SetAttribute("Ultimate", 47)
+
+    task.spawn(function()
+local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    local sound = Instance.new("Sound", game:GetService("SoundService"))
+            sound.Looped = false
+            sound.SoundId = "rbxassetid://18460863844"
+            sound.Playing = true
+            sound.Volume = 3
+            wait(0.1)
+spawn(function()
+            wait(7)
+            local SoundTP = Instance.new("Sound", game:GetService("SoundService"))
+            SoundTP.SoundId = "rbxassetid://18461671633"
+            SoundTP.Playing = true 
+            SoundTP.Volume = 2
+            wait(1)
+            shared.repfire({
+                ["Effect"] = "Five Season Camera",
+                ["char"] = game.Players.LocalPlayer.Character
+            })
+        end)
+        spawn(function()
+            local sound2 = Instance.new("Sound", game:GetService("SoundService"))
+            sound2.Looped = false
+            sound2.SoundId = "rbxassetid://18460952794"
+            sound2.Volume = 0.7
+            sound2:Play()
+            wait(3.4)
+            local Audio_first_part_voiceline = Instance.new("Sound")
+           Audio_first_part_voiceline.SoundId = "rbxassetid://18460893321"
+           Audio_first_part_voiceline.Parent = game.Players.LocalPlayer.Character.Head
+		Audio_first_part_voiceline.Volume = 1.5
+		Audio_first_part_voiceline:Play()
+		
+            
+            wait(10)
+shared.repfire({
+                ["Effect"] = "Five Season Atk",
+                ["char"] = game.Players.LocalPlayer.Character
+            })
+local Anim = Instance.new("Animation")
+Anim.AnimationId = "rbxassetid://18462894593"
+local k = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+Anim.AnimationId = "rbxassetid://0"
+k:Play()
+            local bringsound = Instance.new("Sound", game.Players.LocalPlayer.Character)
+            bringsound.SoundId = "rbxassetid://18461820786"
+            bringsound.Playing = true
+            bringsound.Volume = 2
+        end)
+local Anim = Instance.new("Animation")
+Anim.AnimationId = "rbxassetid://18462892217"
+local k = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+Anim.AnimationId = "rbxassetid://0"
+k:Play()
+
+shared.repfire({
+                ["Effect"] = "Five Season Startup",
+                ["char"] = game.Players.LocalPlayer.Character
+            })
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+
+    task.spawn(function()
+local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    local sound = Instance.new("Sound", game:GetService("SoundService"))
+            sound.Looped = false
+            sound.SoundId = "rbxassetid://18460863844"
+            sound.Playing = true
+            sound.Volume = 3
+            wait(0.1)
+spawn(function()
+            wait(7)
+            local SoundTP = Instance.new("Sound", game:GetService("SoundService"))
+            SoundTP.SoundId = "rbxassetid://18461671633"
+            SoundTP.Playing = true 
+            SoundTP.Volume = 2
+            wait(1)
+            shared.repfire({
+                ["Effect"] = "Five Season Camera",
+                ["char"] = game.Players.LocalPlayer.Character
+            })
+        end)
+        spawn(function()
+            local sound2 = Instance.new("Sound", game:GetService("SoundService"))
+            sound2.Looped = false
+            sound2.SoundId = "rbxassetid://18460952794"
+            sound2.Volume = 0.7
+            sound2:Play()
+            wait(3.4)
+            local Audio_first_part_voiceline = Instance.new("Sound")
+           Audio_first_part_voiceline.SoundId = "rbxassetid://18460893321"
+           Audio_first_part_voiceline.Parent = game.Players.LocalPlayer.Character.Head
+		Audio_first_part_voiceline.Volume = 1.5
+		Audio_first_part_voiceline:Play()
+		
+            
+            wait(10)
+shared.repfire({
+                ["Effect"] = "Five Season Atk",
+                ["char"] = game.Players.LocalPlayer.Character
+            })
+local Anim = Instance.new("Animation")
+Anim.AnimationId = "rbxassetid://18462894593"
+local k = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+Anim.AnimationId = "rbxassetid://0"
+k:Play()
+            local bringsound = Instance.new("Sound", game.Players.LocalPlayer.Character)
+            bringsound.SoundId = "rbxassetid://18461820786"
+            bringsound.Playing = true
+            bringsound.Volume = 2
+        end)
+local Anim = Instance.new("Animation")
+Anim.AnimationId = "rbxassetid://18462892217"
+local k = game.Players.LocalPlayer.Character.Humanoid:LoadAnimation(Anim)
+Anim.AnimationId = "rbxassetid://0"
+k:Play()
+
+shared.repfire({
+                ["Effect"] = "Five Season Startup",
+                ["char"] = game.Players.LocalPlayer.Character
+            })
 end)
 
     local startSize = clonedCooldown.Size
@@ -19942,4 +20753,1502 @@ if player.Character then
     if scriptHasRun then
         scriptHasRun.Value = false
     end
+end
+8203, -0.786462903, 0.110811085, 0.993827105, 0.00535501633, 0.781264126, -0.0904383436, 0.617614388)
+    },
+    {
+        ["Fov"] = 66.477211,
+        ["Cf"] = CFrame.new(8.34422302, -0.162785053, -9.38744354, 0.65602982, -0.0559347011, -0.75265944, 0.102677561, 0.994592607, 0.0155811375, 0.747718096, -0.0875029415, 0.658225775)
+    }
+}
+    local player = game.Players.LocalPlayer
+    local camera = workspace.CurrentCamera
+    camera.CameraType = Enum.CameraType.Scriptable
+    local humanoidRootPart = player.Character.HumanoidRootPart
+local e = humanoidRootPart.CFrame - humanoidRootPart.CFrame.LookVector * 25.5
+local v2 = e * CFrame.Angles(0, math.rad(57), 0) * CFrame.new(10, 0, -3)
+    for i, frame in ipairs(cutscene) do
+        camera.CFrame = v2:ToWorldSpace(frame.Cf)
+        camera.FieldOfView = frame.Fov
+        wait(0.0099)
+    end
+    camera.CameraType = Enum.CameraType.Custom
+end)
+
+task.spawn(function()
+wait(5.5)
+local hit1 = game.ReplicatedStorage.Resources.KJEffects["HitParticles"].Hit:Clone()
+    hit1.Parent = game.Players.LocalPlayer.Character["Right Arm"]
+        for _, child in ipairs(hit1:GetChildren()) do
+            if child:IsA("ParticleEmitter") then -- Check if the child is a ParticleEmitter
+                child:Emit(8) -- Emit 20 particles
+            end
+        end
+local hit1 = game.ReplicatedStorage.Resources.KJEffects["RUNAROUNDWIND"].RUNAROUNDWIND:Clone()
+hit1.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
+    for _, child in ipairs(hit1:GetChildren()) do
+        if child:IsA("ParticleEmitter") then -- Check if the child is a ParticleEmitter
+            child:Emit(5) -- Emit 20 particles
+        end
+    end
+
+local rs = game:GetService("ReplicatedStorage")
+local ws = game:GetService("Workspace")
+local p = game.Players.LocalPlayer
+local char = p.Character
+local hrp = char and char:FindFirstChild("HumanoidRootPart")
+
+if hrp then
+    local sb = rs:FindFirstChild("Resources") and rs.Resources:FindFirstChild("KJEffects") and rs.Resources.KJEffects:FindFirstChild("spinbeam")
+    if sb then
+        local c = sb:Clone()
+        local ld = hrp.CFrame.LookVector
+        local lp = hrp.Position + ld * -10 - Vector3.new(0, 1.3, 0)
+        c.CFrame = CFrame.new(lp, lp + ld)
+
+        local b2 = c:FindFirstChild("beam2")
+        if b2 then
+            local b = b2:FindFirstChild("Beam")
+            if b then
+                b.Enabled = true
+                b.Transparency = NumberSequence.new(0.7)
+            end
+        end
+
+        local t = ws:FindFirstChild("Thrown") or Instance.new("Folder", ws)
+        t.Name = "Thrown"
+        c.Parent = t
+
+        -- Destroy the cloned object after 1 second
+        delay(1, function()
+            if c and c:IsDescendantOf(ws) then
+                c:Destroy()
+            end
+        end)
+    end
+end
+
+delay(0.2, function()
+    local a = game.ReplicatedStorage.Resources.KJEffects["RUNAROUNDWIND"].RUNAROUNDWIND:Clone()
+    a.Parent = game.Players.LocalPlayer.Character["HumanoidRootPart"]
+    for _, b in ipairs(a:GetChildren()) do
+        if b:IsA("ParticleEmitter") then
+            b:Emit(5)
+        end
+    end
+
+    local RS = game:GetService("RunService")
+    local WS = game:GetService("Workspace")
+
+    local tf = WS:FindFirstChild("Thrown")
+    if tf then
+        local pb = tf:FindFirstChild("spinbeam")
+        if pb then
+            local function fade(o)
+                local st = tick()
+                local dur = 0.2
+                local ot = o.Transparency
+                
+                RS.RenderStepped:Connect(function()
+                    local t = tick() - st
+                    local a = math.clamp(t / dur, 0, 1)
+                    
+                    if o:IsA("Beam") then
+                        local nt = NumberSequence.new(
+                            0.7 + (1 - 0.7) * a,
+                            0.7 + (1 - 0.7) * a
+                        )
+                        o.Transparency = nt
+                    end
+                    
+                    if a >= 1 then
+                        return
+                    end
+                end)
+            end
+
+            for _, v in ipairs(pb:GetChildren()) do
+                if v:IsA("Attachment") and v.Name == "beam2" then
+                    local b = v:FindFirstChild("Beam")
+                    if b then
+                        fade(b)
+                    end
+                end
+            end
+        end
+    end
+end)
+end)
+
+task.spawn(function()
+wait(6)
+local p = game.Players.LocalPlayer
+        local Humanoid = p.Character:WaitForChild("Humanoid")
+        local candash = false
+        local AnimAnim = Instance.new("Animation")
+        AnimAnim.AnimationId = "rbxassetid://0"
+        local Anim = Humanoid:LoadAnimation(AnimAnim)
+        AnimAnim.AnimationId = "rbxassetid://0"
+        Anim:Play()
+        game.Players.LocalPlayer.Character.Animate.Enabled = false
+        game.Players.LocalPlayer.Character.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+        local move = Instance.new("BodyVelocity", game.Players.LocalPlayer.Character.HumanoidRootPart)
+        spawn(function()
+                
+            local sped = 100
+        
+            move.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+            move.Velocity = Vector3.new(1,1,1) * game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector * sped
+            move.P = 10000
+            move.Parent = game.Players.LocalPlayer.Character.HumanoidRootPart
+        
+          
+        
+            repeat
+                move.Velocity = Vector3.new(1,1,1) * game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.LookVector * sped
+                wait(0)
+                until candash == true
+        end)
+        
+        spawn(function()
+            sped = 8
+            wait(1.5)
+local launch1 = game.ReplicatedStorage.Resources.KJEffects["launchup"].launchything:Clone()
+launch1.Parent = game.Players.LocalPlayer.Character["Torso"]
+    for _, child in ipairs(launch1:GetChildren()) do
+        if child:IsA("ParticleEmitter") then
+            child:Emit(3)
+        end
+    end
+
+local r = game:GetService("ReplicatedStorage")
+local p = game:GetService("Players").LocalPlayer
+
+local function m()
+    local a = r:FindFirstChild("Resources")
+    if not a then return end
+
+    local b = a:FindFirstChild("KJEffects")
+    if not b then return end
+
+    local c = b:FindFirstChild("KJWallCombo")
+    if not c then return end
+
+    local d = c:FindFirstChild("UserAura")
+    if not d or not d:IsA("Folder") then return end
+
+    local e = p.Character:FindFirstChild("Torso")
+    if not e then return end
+
+    for _, f in pairs(d:GetChildren()) do
+        if f:IsA("ParticleEmitter") then
+            local g = f:Clone()
+            g.Parent = e
+            g.Enabled = true
+            g.Rate = 50
+            g:Emit(2)
+        end
+    end
+end
+
+m()
+            
+            move:Destroy()
+        end)
+end)
+end
+
+local function setupAnimationEffect()
+    local humanoid = character:WaitForChild("Humanoid")
+
+    humanoid.AnimationPlayed:Connect(function(animationTrack)
+        if animationTrack.Animation.AnimationId == targetAnimID then
+            playSoundEffect()
+        end
+    end)
+end
+
+setupAnimationEffect()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    setupAnimationEffect()
+end)
+    print("Character script executed!")
+end
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local topbarPlus = playerGui:FindFirstChild("TopbarPlus")
+if not topbarPlus then
+    warn("TopbarPlus not found!")
+    return
+end
+
+local topbarContainer = topbarPlus:FindFirstChild("TopbarContainer")
+local unnamedIcon = topbarContainer and topbarContainer:FindFirstChild("UnnamedIcon")
+if not unnamedIcon then
+    warn("UnnamedIcon not found!")
+    return
+end
+
+local dropdownContainer = unnamedIcon:FindFirstChild("DropdownContainer")
+local dropdownFrame = dropdownContainer and dropdownContainer:FindFirstChild("DropdownFrame")
+if not dropdownFrame then
+    warn("DropdownFrame not found!")
+    return
+end
+
+local charFrame = Instance.new("Frame")
+charFrame.Name = "Char"
+charFrame.Parent = dropdownFrame
+charFrame.BackgroundTransparency = 1
+charFrame.Size = UDim2.new(1, 0, 0, 32)
+charFrame.ZIndex = 1
+
+local iconButton = Instance.new("TextButton")
+iconButton.Name = "IconButton"
+iconButton.Parent = charFrame
+iconButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+iconButton.BackgroundTransparency = 0.5
+iconButton.Size = UDim2.new(1, 0, 1, 0)
+iconButton.TextTransparency = 1
+
+local iconImage = Instance.new("ImageLabel")
+iconImage.Name = "IconImage"
+iconImage.Parent = iconButton
+iconImage.BackgroundTransparency = 1
+iconImage.Image = "rbxassetid://" .. CharacterIcon
+iconImage.Position = UDim2.new(0, 0, 0, 0)
+iconImage.Size = UDim2.new(0, 24, 0, 24)
+
+local iconLabel = Instance.new("TextLabel")
+iconLabel.Name = "IconLabel"
+iconLabel.Parent = iconButton
+iconLabel.BackgroundTransparency = 1
+iconLabel.Font = Enum.Font.GothamMedium
+iconLabel.Text = CharacterName
+iconLabel.TextColor3 = Color3.fromRGB(255, 216, 19)
+iconLabel.TextSize = 14
+iconLabel.Position = UDim2.new(0, 44, 0, 15)
+iconLabel.Size = UDim2.new(1, -56, 0, 7)
+
+local function onErrorNotification()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "NOTIFICATION",
+        Text = "YOU'RE ALREADY PLAYING AS THIS CHARACTER.",
+        Icon = "",
+        Duration = 5
+    })
+end
+
+local function handleIconButtonClick()
+    Script()
+    local character = player.Character
+    if not character then return end
+
+    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun and scriptHasRun.Value then
+        onErrorNotification()
+        return
+    end
+
+    if not scriptHasRun then
+        scriptHasRun = Instance.new("BoolValue")
+        scriptHasRun.Name = "ScriptHasRun"
+        scriptHasRun.Value = true
+        scriptHasRun.Parent = character
+    else
+        scriptHasRun.Value = true
+    end
+end
+
+iconButton.MouseButton1Click:Connect(handleIconButtonClick)
+
+print("Script Loaded 0 cap")
+
+player.CharacterAdded:Connect(function(character)
+    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun then
+        scriptHasRun.Value = false
+    end
+end)
+
+if player.Character then
+    local scriptHasRun = player.Character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun then
+        scriptHasRun.Value = false
+    end
+end
+
+local CharacterName = "Key Master"
+local CharacterIcon = "115711460384947"
+
+local function Script()
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function deleteInventory()
+    for _, tool in pairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+end
+
+deleteInventory()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    deleteInventory()
+end)
+wait(0.5)
+local tool = Instance.new("Tool")
+tool.Name = "Perfection."
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 1
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+shared.repfire({
+Effect = "Vault Scene",
+Character = game.Players.LocalPlayer.Character
+})
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+    print("Character script executed!")
+end
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local topbarPlus = playerGui:FindFirstChild("TopbarPlus")
+if not topbarPlus then
+    warn("TopbarPlus not found!")
+    return
+end
+
+local topbarContainer = topbarPlus:FindFirstChild("TopbarContainer")
+local unnamedIcon = topbarContainer and topbarContainer:FindFirstChild("UnnamedIcon")
+if not unnamedIcon then
+    warn("UnnamedIcon not found!")
+    return
+end
+
+local dropdownContainer = unnamedIcon:FindFirstChild("DropdownContainer")
+local dropdownFrame = dropdownContainer and dropdownContainer:FindFirstChild("DropdownFrame")
+if not dropdownFrame then
+    warn("DropdownFrame not found!")
+    return
+end
+
+local charFrame = Instance.new("Frame")
+charFrame.Name = "Char"
+charFrame.Parent = dropdownFrame
+charFrame.BackgroundTransparency = 1
+charFrame.Size = UDim2.new(1, 0, 0, 32)
+charFrame.ZIndex = 1
+
+local iconButton = Instance.new("TextButton")
+iconButton.Name = "IconButton"
+iconButton.Parent = charFrame
+iconButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+iconButton.BackgroundTransparency = 0.5
+iconButton.Size = UDim2.new(1, 0, 1, 0)
+iconButton.TextTransparency = 1
+
+local iconImage = Instance.new("ImageLabel")
+iconImage.Name = "IconImage"
+iconImage.Parent = iconButton
+iconImage.BackgroundTransparency = 1
+iconImage.Image = "rbxassetid://" .. CharacterIcon
+iconImage.Position = UDim2.new(0, 0, 0, 0)
+iconImage.Size = UDim2.new(0, 24, 0, 24)
+
+local iconLabel = Instance.new("TextLabel")
+iconLabel.Name = "IconLabel"
+iconLabel.Parent = iconButton
+iconLabel.BackgroundTransparency = 1
+iconLabel.Font = Enum.Font.GothamMedium
+iconLabel.Text = CharacterName
+iconLabel.TextColor3 = Color3.fromRGB(255, 216, 19)
+iconLabel.TextSize = 14
+iconLabel.Position = UDim2.new(0, 44, 0, 15)
+iconLabel.Size = UDim2.new(1, -56, 0, 7)
+
+local function onErrorNotification()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "NOTIFICATION",
+        Text = "YOU'RE ALREADY PLAYING AS THIS CHARACTER.",
+        Icon = "",
+        Duration = 5
+    })
+end
+
+local function handleIconButtonClick()
+    Script()
+    local character = player.Character
+    if not character then return end
+
+    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun and scriptHasRun.Value then
+        onErrorNotification()
+        return
+    end
+
+    if not scriptHasRun then
+        scriptHasRun = Instance.new("BoolValue")
+        scriptHasRun.Name = "ScriptHasRun"
+        scriptHasRun.Value = true
+        scriptHasRun.Parent = character
+    else
+        scriptHasRun.Value = true
+    end
+end
+
+iconButton.MouseButton1Click:Connect(handleIconButtonClick)
+
+print("Script Loaded 0 cap")
+
+player.CharacterAdded:Connect(function(character)
+    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun then
+        scriptHasRun.Value = false
+    end
+end)
+
+if player.Character then
+    local scriptHasRun = player.Character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun then
+        scriptHasRun.Value = false
+    end
+end
+
+local CharacterName = "Weakest Dummy"
+local CharacterIcon = "17855866639"
+
+local function Script()
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function deleteInventory()
+    for _, tool in pairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+end
+
+deleteInventory()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    deleteInventory()
+end)
+
+local plr = game.Players.LocalPlayer
+local gui = plr.PlayerGui
+local ulttext = gui.ScreenGui.MagicHealth.TextLabel
+
+ulttext.Text = "?"
+
+wait(0.5)
+local tool = Instance.new("Tool")
+tool.Name = "Pent Up Aggression"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 1
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+wait(0)
+local v = Instance.new("Sound", game.Players.LocalPlayer.Character.Torso)
+v.Name = "Attack Sounds"
+v.SoundId = "rbxassetid://18440861190"
+v.Volume = 2
+v:Play()
+
+local function Cinematic(cutsceneData)
+            if not cutsceneData then
+                warn("Cutscene data is nil")
+                return
+            end
+            local RS = game.ReplicatedStorage
+        local v_u_1 = game:GetService("RunService")
+        local v2 = game.Players.LocalPlayer
+        local v_u_3 = v2.Character or v2.CharacterAdded:Wait()
+        local v_u_4 = workspace.CurrentCamera
+        local RunService = game:GetService("RunService")
+        local Players = game:GetService("Players")
+        local TweenService = game:GetService("TweenService")
+        local localPlayer = Players.LocalPlayer
+        local character = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+        local Camera = workspace.CurrentCamera
+        local FiveEffects = RS.Resources.FiveSeasonsFX
+        local EYE = FiveEffects.CharFX.EyeEmit:Clone()
+        local KJEffects = RS.Resources.KJEffects
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local humanoid: Instance = character:WaitForChild("Humanoid")
+        spawn(function()
+            local weakDummy = game.Workspace.Live["Weakest Dummy"]
+    local weakDummyHRP = weakDummy:FindFirstChild("HumanoidRootPart")
+    
+    if weakDummyHRP then
+        for i = 1, 10 do
+            character:WaitForChild("HumanoidRootPart").CFrame = weakDummyHRP.CFrame * CFrame.new(0, 0, -3) * CFrame.Angles(0, math.pi, 0)
+            wait(1) -- Her aktarım arasında küçük bir bekleme süresi
+        end
+    end 
+        end)
+        spawn(function()
+            character.HumanoidRootPart.Anchored = true
+            wait(10)
+            character.HumanoidRootPart.Anchored = face
+        end)
+            local originalCFrame = game.workspace.Camera.CFrame
+            local elapsedTime = 0
+            local connection
+        
+            character.Humanoid.AutoRotate = false
+            game.workspace.Camera.CameraType = Enum.CameraType.Scriptable
+        
+            connection = RunService.RenderStepped:Connect(function(deltaTime)
+                elapsedTime = elapsedTime + deltaTime * 60
+                local keyFrame = cutsceneData[math.ceil(elapsedTime)]
+        
+                if keyFrame then
+                    TweenService:Create(game.workspace.Camera, TweenInfo.new(0.05, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                        CFrame = character.HumanoidRootPart.CFrame * keyFrame.cframe,
+                        FieldOfView = keyFrame.fov
+                    }):Play()
+                    print("Playing keyFrame", keyFrame)
+                else
+                    connection:Disconnect()
+                    game.workspace.Camera.FieldOfView = 70
+                    character.Humanoid.AutoRotate = true
+                    game.workspace.Camera.CameraType = Enum.CameraType.Custom
+                    game.workspace.Camera.CFrame = originalCFrame
+                    print("Cutscene ended")
+                end
+            end)
+        end
+    
+        local v_u_1 = game:GetService("RunService")
+    local v2 = game.Players.LocalPlayer
+    local v_u_3 = v2.Character
+    local v_u_4 = workspace.CurrentCamera
+        local RS = game.ReplicatedStorage
+    local v_u_1 = game:GetService("RunService")
+    local v2 = game.Players.LocalPlayer
+    local v_u_3 = v2.Character
+    local v_u_4 = workspace.CurrentCamera
+    local RunService = game:GetService("RunService")
+    local Players = game:GetService("Players")
+    local TweenService = game:GetService("TweenService")
+    local localPlayer = Players.LocalPlayer
+    local character = localPlayer.Character
+    local Camera = workspace.CurrentCamera
+    local FiveEffects = RS.Resources.FiveSeasonsFX
+    local EYE = FiveEffects.CharFX.EyeEmit:Clone()
+    local KJEffects = RS.Resources.KJEffects
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    local humanoid = character:WaitForChild("Humanoid")
+    wait(-5)
+    Cinematic(loadstring(game:HttpGet("https://raw.githubusercontent.com/AlperPro/shhh/main/lololol.lua"))())
+    local character = game.Workspace.Live["Weakest Dummy"]
+    local humanoid = character:WaitForChild("Humanoid")
+    local animator = humanoid:WaitForChild("Animator")
+    local Animation = Instance.new("Animation")
+    Animation.AnimationId = "rbxassetid://18440398084"
+    local AnimationTrack = animator:LoadAnimation(Animation)
+    AnimationTrack:Play()
+    AnimationTrack.Priority = Enum.AnimationPriority.Action4
+    AnimationTrack:AdjustSpeed(1)
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    local humanoid = character:WaitForChild("Humanoid")
+    local animator = humanoid:WaitForChild("Animator")
+    local Animation = Instance.new("Animation")
+    Animation.AnimationId = "rbxassetid://18440406788"
+    local AnimationTrack = animator:LoadAnimation(Animation)
+    AnimationTrack:Play()
+    AnimationTrack.Priority = Enum.AnimationPriority.Action4
+    AnimationTrack:AdjustSpeed(1)
+
+task.spawn(function()
+    wait(7.1)
+    shared.repfire({
+        Effect = "Death FX",
+        Character = game.Workspace.Live["Weakest Dummy"]
+    })
+end)
+
+task.spawn(function()
+wait(9)
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local TweenService = game:GetService("TweenService")
+
+local tweenInfo = TweenInfo.new(
+    1,
+    Enum.EasingStyle.Quad,
+    Enum.EasingDirection.Out
+)
+
+local goal = {FieldOfView = 70}
+
+local tween = TweenService:Create(camera, tweenInfo, goal)
+tween:Play()
+end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Dummy Counter"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 2
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+local player = game.Players.LocalPlayer
+repeat wait() until player.Character and player.Character.Humanoid
+local humanoid = player.Character:WaitForChild("Humanoid")
+local anim = Instance.new("Animation")
+anim.AnimationId = "rbxassetid://18440398084"
+local playAnim = humanoid:LoadAnimation(anim)
+anim.AnimationId = "rbxassetid://0"
+playAnim:Play()
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function deleteInventory()
+    for _, tool in pairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+
+    for _, tool in pairs(character:GetChildren()) do
+        if tool:IsA("Tool") or tool:IsA("HopperBin") then
+            tool:Destroy()
+        end
+    end
+end
+
+deleteInventory()
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    deleteInventory()
+end)
+
+local player = game.Workspace.Live["Weakest Dummy"]
+repeat wait() until player.Humanoid
+local dummyhumanoid = game.Workspace.Live["Weakest Dummy"]["Humanoid"]
+local anim2 = Instance.new("Animation")
+anim2.AnimationId = "rbxassetid://18440406788"
+local playAnim2 = dummyhumanoid:LoadAnimation(anim2)
+playAnim2:Play()
+
+local function Cinematic(cutsceneData)
+    if not cutsceneData then
+        warn("Cutscene data is nil")
+        return
+    end
+
+    local RunService = game:GetService("RunService")
+    local TweenService = game:GetService("TweenService")
+    local SoundService = game:GetService("SoundService")
+    local weakDummy = workspace.Live["Weakest Dummy"]
+    local weakDummyHRP = weakDummy:FindFirstChild("HumanoidRootPart")
+
+    if not weakDummyHRP then
+        warn("Weakest Dummy's HumanoidRootPart not found")
+        return
+    end
+
+    local originalCFrame = workspace.CurrentCamera.CFrame
+    local elapsedTime = 0
+    local connection
+
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://18440861190"
+    sound.Volume = 2
+    sound.Parent = SoundService
+
+    spawn(function()
+        local player = game.Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        for i = 1, 10 do
+            character:WaitForChild("HumanoidRootPart").CFrame = weakDummyHRP.CFrame * CFrame.new(0, 0, -3) * CFrame.Angles(0, math.pi, 0)
+            wait(1)
+        end
+    end)
+
+    spawn(function()
+        local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+        character.HumanoidRootPart.Anchored = true
+        wait(10)
+        character.HumanoidRootPart.Anchored = false
+    end)
+
+    workspace.CurrentCamera.CameraType = Enum.CameraType.Scriptable
+
+    sound:Play()
+
+    connection = RunService.RenderStepped:Connect(function(deltaTime)
+        elapsedTime = elapsedTime + deltaTime * 60
+        local keyFrame = cutsceneData[math.ceil(elapsedTime)]
+
+        if keyFrame then
+            TweenService:Create(workspace.CurrentCamera, TweenInfo.new(0.05, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
+                CFrame = weakDummyHRP.CFrame * keyFrame.cframe,
+                FieldOfView = keyFrame.fov
+            }):Play()
+            print("Playing keyFrame", keyFrame)
+        else
+            connection:Disconnect()
+            workspace.CurrentCamera.FieldOfView = 70
+            workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+            workspace.CurrentCamera.CFrame = originalCFrame
+            sound:Stop()
+            sound:Destroy()
+            print("Cutscene ended")
+        end
+    end)
+end
+
+wait(-5)
+Cinematic(loadstring(game:HttpGet("https://raw.githubusercontent.com/AlperPro/shhh/main/lololol.lua"))())
+
+
+task.spawn(function()
+wait(9)
+local player = game.Players.LocalPlayer
+local camera = workspace.CurrentCamera
+local TweenService = game:GetService("TweenService")
+
+local tweenInfo = TweenInfo.new(
+    1,
+    Enum.EasingStyle.Quad,
+    Enum.EasingDirection.Out
+)
+
+local goal = {FieldOfView = 70}
+
+local tween = TweenService:Create(camera, tweenInfo, goal)
+tween:Play()
+end)
+
+
+task.spawn(function()
+wait(7.1)
+shared.repfire({
+Effect = "Death FX",
+Character = game.Players.LocalPlayer.Character
+})
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Teleportation"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 3
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+    local player = game.Players.LocalPlayer
+repeat wait() until player.Character.Humanoid
+local humanoid = player.Character.Humanoid
+local character = player.Character or player.CharacterAdded:Wait()
+local UserInputService = game:GetService("UserInputService")
+
+local anim = Instance.new("Animation")
+anim.AnimationId = "rbxassetid://15283197429"
+
+local playAnim = humanoid:LoadAnimation(anim)
+playAnim:Play()
+playAnim:AdjustSpeed(5)
+
+local player = game.Players.LocalPlayer
+local targetPosition = Vector3.new(147.685302734375, 440.7559814453125, 25.836408615112305)
+
+if player and player.Character then
+    local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+    if rootPart then
+        rootPart.CFrame = CFrame.new(targetPosition)
+    end
+end
+
+local soundeffect = Instance.new("Sound")
+soundeffect.SoundId = "rbxassetid://4861638982"
+soundeffect.Parent = game.Players.LocalPlayer.Character.Torso
+soundeffect:Play()
+soundeffect.Volume = 5
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Dummy Does Stoic Bomb"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 4
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+    local dummy = game.Workspace.Live["Weakest Dummy"]
+local humanoid = dummy:FindFirstChildOfClass("Humanoid")
+local root = dummy:FindFirstChild("HumanoidRootPart")
+
+local tp = shared.sfx({
+    SoundId = "rbxassetid://17149593018",
+    Parent = dummy.Torso,
+    Volume = 3
+})
+tp:Resume()
+
+local fall = shared.sfx({
+    SoundId = "rbxassetid://17141392513",
+    Parent = dummy.Torso,
+    Volume = 3
+})
+fall:Resume()
+
+local animation = Instance.new("Animation")
+animation.AnimationId = "rbxassetid://17141153099"
+
+local freeze = Instance.new("Accessory", dummy)
+freeze.Name = "Freeze"
+freeze:SetAttribute("NoStop", true)
+
+local AbsoluteImmortal = Instance.new("Accessory", dummy)
+AbsoluteImmortal.Name = "AbsoluteImmortal"
+
+local track = humanoid:LoadAnimation(animation)
+animation.AnimationId = "rbxassetid://0"
+
+track:Play()
+
+track:GetMarkerReachedSignal("Voiceline"):Connect(function()
+    local BAKUDAN = shared.sfx({
+        SoundId = "rbxassetid://17141392676",
+        Parent = dummy.Torso,
+        Volume = 3
+    })
+    BAKUDAN:Resume()
+end)
+
+track:GetMarkerReachedSignal("ChargingSound"):Connect(function()
+    local IMMACHARGEMAHLASER = shared.sfx({
+        SoundId = "rbxassetid://17141392976",
+        Parent = dummy.Torso,
+        Volume = 3
+    })
+    IMMACHARGEMAHLASER:Resume()
+end)
+
+track:GetMarkerReachedSignal("FinalBoarExplosion"):Connect(function()
+    local BOOM = shared.sfx({
+        SoundId = "rbxassetid://17141392854",
+        Parent = dummy.Torso,
+        Volume = 3
+    })
+    BOOM:Resume()
+end)
+
+shared.repfire({
+    Effect = "Stoic Bomb",
+    ogrootcfr = root.CFrame,
+    char = dummy,
+    hit = dummy,
+    humanoid = humanoid,
+    id = 0,
+    Seed = math.random(4.5, 12.5)
+})
+
+track.Stopped:Connect(function()
+    freeze:Destroy()
+    AbsoluteImmortal:Destroy()
+end)
+end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local tool = Instance.new("Tool")
+tool.Name = "Dummy Does Five Seasons"
+tool.RequiresHandle = false
+tool.ToolTip = "ooh kick yes yes baby"
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+
+local ToolNumber = 5
+local cooldownTime = 10
+local isCooldownActive = false
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+local hotbar = playerGui:WaitForChild("Hotbar")
+local backpack = hotbar:WaitForChild("Backpack")
+local localScript = backpack:WaitForChild("LocalScript")
+local cooldown = localScript:WaitForChild("Cooldown")
+local clonedCooldown
+
+local function onActivated()
+    if isCooldownActive then return end
+    isCooldownActive = true
+
+    clonedCooldown = cooldown:Clone()
+    local hotbarSlot1 = hotbar:WaitForChild("Backpack"):WaitForChild("Hotbar"):WaitForChild(ToolNumber):WaitForChild("Base")
+    clonedCooldown.Parent = hotbarSlot1
+    clonedCooldown.BackgroundColor3 = Color3.fromRGB(167, 57, 57)
+
+task.spawn(function()
+
+task.wait(0.8)
+
+task.spawn(function()
+
+local c = game.Workspace.Live["Weakest Dummy"]
+local hrp = c:WaitForChild("HumanoidRootPart")
+local h = c:WaitForChild("Humanoid")
+    
+    local s = Instance.new("Sound")
+    s.Name = "SeasonsSFX"
+    s.SoundId = "rbxassetid://18460863844"
+    s.Parent = c
+    s:Play()
+
+shared.repfire({
+Effect = "Five Season Startup",
+char = game.Workspace.Live["Weakest Dummy"],
+id = "18462892217"
+})
+
+local h = game.Workspace.Live["Weakest Dummy"].Humanoid
+
+local a = Instance.new("Animation")
+a.AnimationId = "rbxassetid://18462892217"
+local t = h:LoadAnimation(a)
+a.AnimationId = "rbxassetid://0"
+t:Play()
+
+task.wait(8.2)
+
+local l = game.Workspace:FindFirstChild("Live")
+
+if l then
+    local d = l:FindFirstChild("Weakest Dummy")
+    d.Hair.Handle.Transparency = 1
+    if d then
+        local p = {
+            d:FindFirstChild("Left Arm"),
+            d:FindFirstChild("Right Arm"),
+            d:FindFirstChild("Left Leg"),
+            d:FindFirstChild("Right Leg"),
+            d:FindFirstChild("Torso"),
+            d:FindFirstChild("Head")
+        }
+
+        for _, v in ipairs(p) do
+            if v then
+                v.Transparency = 1
+            end
+        end
+    end
+end
+
+task.wait(1.2)
+
+local a = game.Workspace.Live["Weakest Dummy"]
+local b = a:WaitForChild("HumanoidRootPart")
+local c = a:WaitForChild("Humanoid")
+local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
+
+local t = TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
+local g = {CFrame = hrp.CFrame * CFrame.new(0, 142, 0)}
+local v = game:GetService("TweenService"):Create(b, t, g)
+v:Play()
+
+local d = Instance.new("Sound", a)
+d.Name = "e"
+d.SoundId = "rbxassetid://18461820786"
+d.Volume = 1
+d:Play()
+
+task.delay(0.63, function()
+  local l = game.Workspace:FindFirstChild("Live")
+
+if l then
+    local d = l:FindFirstChild("Weakest Dummy")
+    d.Hair.Handle.Transparency = 0
+    if d then
+        local p = {
+            d:FindFirstChild("Left Arm"),
+            d:FindFirstChild("Right Arm"),
+            d:FindFirstChild("Left Leg"),
+            d:FindFirstChild("Right Leg"),
+            d:FindFirstChild("Torso"),
+            d:FindFirstChild("Head")
+        }
+
+        for _, v in ipairs(p) do
+            if v then
+                v.Transparency = 0
+            end
+        end
+    end
+end
+end)
+
+shared.repfire({
+    Effect = "Five Season Atk",
+    char = a,
+    id = "18462894593"
+})
+
+local f = Instance.new("Animation")
+f.AnimationId = "rbxassetid://18462894593"
+local g = c:LoadAnimation(f)
+g:Play()
+
+local p = game.Players.LocalPlayer
+local c = p.Character or p.CharacterAdded:Wait()
+local t = workspace:WaitForChild("Thrown")
+t.ChildAdded:Connect(function(o)
+    if o.Name == "FinalExplosion" then
+        local h = c:FindFirstChild("HumanoidRootPart")
+        if h then
+            local bv = Instance.new("BodyVelocity")
+            bv.MaxForce = Vector3.new(100000, 100000, 100000)
+            bv.Velocity = Vector3.new(0, 566, 0)
+            bv.Parent = h
+            game.Debris:AddItem(bv, 0.1)
+        end
+        c.Humanoid.Health = 0
+    end
+end)
+
+end)
+
+    end)
+
+    local startSize = clonedCooldown.Size
+    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
+
+    spawn(function()
+        local startTime = tick()
+        local initialSize = clonedCooldown.Size
+
+        while tick() - startTime < cooldownTime do
+            local elapsed = tick() - startTime
+            local progress = elapsed / cooldownTime
+
+            local newSize = UDim2.new(
+                initialSize.X.Scale,
+                initialSize.X.Offset,
+                initialSize.Y.Scale * (1 - progress),
+                initialSize.Y.Offset * (1 - progress)
+            )
+
+            clonedCooldown.Size = newSize
+            wait()
+        end
+
+        clonedCooldown.Size = endSize
+        clonedCooldown:Destroy()
+        isCooldownActive = false
+    end)
+end
+
+tool.Equipped:Connect(onActivated)
+
+tool.Parent = game.Players.LocalPlayer.Backpack
+    print("Character script executed!")
+end
+
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local topbarPlus = playerGui:FindFirstChild("TopbarPlus")
+if not topbarPlus then
+    warn("TopbarPlus not found!")
+    return
+end
+
+local topbarContainer = topbarPlus:FindFirstChild("TopbarContainer")
+local unnamedIcon = topbarContainer and topbarContainer:FindFirstChild("UnnamedIcon")
+if not unnamedIcon then
+    warn("UnnamedIcon not found!")
+    return
+end
+
+local dropdownContainer = unnamedIcon:FindFirstChild("DropdownContainer")
+local dropdownFrame = dropdownContainer and dropdownContainer:FindFirstChild("DropdownFrame")
+if not dropdownFrame then
+    warn("DropdownFrame not found!")
+    return
+end
+
+local charFrame = Instance.new("Frame")
+charFrame.Name = "Char"
+charFrame.Parent = dropdownFrame
+charFrame.BackgroundTransparency = 1
+charFrame.Size = UDim2.new(1, 0, 0, 32)
+charFrame.ZIndex = 1
+
+local iconButton = Instance.new("TextButton")
+iconButton.Name = "IconButton"
+iconButton.Parent = charFrame
+iconButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+iconButton.BackgroundTransparency = 0.5
+iconButton.Size = UDim2.new(1, 0, 1, 0)
+iconButton.TextTransparency = 1
+
+local iconImage = Instance.new("ImageLabel")
+iconImage.Name = "IconImage"
+iconImage.Parent = iconButton
+iconImage.BackgroundTransparency = 1
+iconImage.Image = "rbxassetid://" .. CharacterIcon
+iconImage.Position = UDim2.new(0, 0, 0, 0)
+iconImage.Size = UDim2.new(0, 24, 0, 24)
+
+local iconLabel = Instance.new("TextLabel")
+iconLabel.Name = "IconLabel"
+iconLabel.Parent = iconButton
+iconLabel.BackgroundTransparency = 1
+iconLabel.Font = Enum.Font.GothamMedium
+iconLabel.Text = CharacterName
+iconLabel.TextColor3 = Color3.fromRGB(255, 216, 19)
+iconLabel.TextSize = 14
+iconLabel.Position = UDim2.new(0, 44, 0, 15)
+iconLabel.Size = UDim2.new(1, -56, 0, 7)
+
+local function onErrorNotification()
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "NOTIFICATION",
+        Text = "YOU'RE ALREADY PLAYING AS THIS CHARACTER.",
+        Icon = "",
+        Duration = 5
+    })
+end
+
+local function handleIconButtonClick()
+    Script()
+    local character = player.Character
+    if not character then return end
+
+    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun and scriptHasRun.Value then
+        onErrorNotification()
+        return
+    end
+
+    if not scriptHasRun then
+        scriptHasRun = Instance.new("BoolValue")
+        scriptHasRun.Name = "ScriptHasRun"
+        scriptHasRun.Value = true
+        scriptHasRun.Parent = character
+    else
+        scriptHasRun.Value = true
+    end
+end
+
+iconButton.MouseButton1Click:Connect(handleIconButtonClick)
+
+print("Script Loaded 0 cap")
+
+player.CharacterAdded:Connect(function(character)
+    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun then
+        scriptHasRun.Value = false
+    end
+end)
+
+if player.Character then
+    local scriptHasRun = player.Character:FindFirstChild("ScriptHasRun")
+    if scriptHasRun then
+        scriptHasRun.Value = false
+    end
+end
+   end
 end
