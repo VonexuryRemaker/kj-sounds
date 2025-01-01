@@ -96,6 +96,178 @@ player.CharacterAdded:Connect(function(character)
 end)
 
 task.spawn(function()
+    wait(15)
+    local ModelId = 0
+    local MoveRight = 100
+    local MoveLeft = 0
+    local MoveUp = 0
+    local MoveDown = 0
+    local MoveBack = 0
+    local MoveForward = 0
+
+    local NPCName = ""
+    local SubText = ""
+    local DialogueText = "Ah, a brave one, I see! I've got a challenge for you. Scale that towering building over there, and I'll reward you with a Special Moveset. Don't keep me waiting!"
+
+    local targetBuilding = Vector3.new(26.737314224243164, 1464.11474609375, 174.0184783935547)
+
+    local d = game:GetObjects("rbxassetid://" .. ModelId)[1]
+    if d:IsA("Model") then
+        if not d.PrimaryPart then
+            local p = Instance.new("Part")
+            p.Transparency = 1
+            p.Anchored = true
+            p.CanCollide = false
+            p.Parent = d
+            d.PrimaryPart = p
+        end
+        d:SetPrimaryPartCFrame(game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame * 
+                               CFrame.new(MoveRight - MoveLeft, MoveUp - MoveDown, MoveBack - MoveForward))
+        d.Parent = workspace
+    end
+
+    local Billboard = Instance.new("BillboardGui")
+    Billboard.Name = "NPCDisplay"
+    Billboard.Size = UDim2.new(5, 0, 3, 0)
+    Billboard.StudsOffset = Vector3.new(0, 3, 0)
+    Billboard.AlwaysOnTop = true
+    Billboard.Parent = d.PrimaryPart
+
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(1, 0, 0.5, 0)
+    Title.Position = UDim2.new(0, 0, 0, 0)
+    Title.Text = ""
+    Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 40
+    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Title.BackgroundTransparency = 1
+    Title.Parent = Billboard
+
+    local SubTitle = Instance.new("TextLabel")
+    SubTitle.Size = UDim2.new(1, 0, 0.5, 0)
+    SubTitle.Position = UDim2.new(0, 0, 0.5, 0)
+    SubTitle.Text = NPCName .. "\n" .. SubText
+    SubTitle.Font = Enum.Font.Gotham
+    SubTitle.TextSize = 20
+    SubTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+    SubTitle.BackgroundTransparency = 1
+    SubTitle.TextYAlignment = Enum.TextYAlignment.Top
+    SubTitle.Parent = Billboard
+
+    local Glow = Instance.new("Part")
+    Glow.Size = Vector3.new(5, 0.1, 5)
+    Glow.Anchored = true
+    Glow.CanCollide = false
+    Glow.Transparency = 0.6
+    Glow.Material = Enum.Material.Neon
+    Glow.Color = Color3.fromRGB(255, 255, 255)
+    Glow.CFrame = d.PrimaryPart.CFrame * CFrame.new(0, -2.5, 0)
+    Glow.Parent = d
+
+    local Marker = Instance.new("Part")
+    Marker.Size = Vector3.new(5, 5, 5)
+    Marker.Anchored = true
+    Marker.CanCollide = false
+    Marker.Material = Enum.Material.Neon
+    Marker.Color = Color3.fromRGB(255, 255, 0) -- Bright yellow
+    Marker.CFrame = CFrame.new(targetBuilding)
+    Marker.Parent = workspace
+
+    local MarkerBillboard = Instance.new("BillboardGui")
+    MarkerBillboard.Name = "TargetMarker"
+    MarkerBillboard.Size = UDim2.new(3, 0, 3, 0)
+    MarkerBillboard.StudsOffset = Vector3.new(0, 5, 0)
+    MarkerBillboard.AlwaysOnTop = true
+    MarkerBillboard.Parent = Marker
+
+    local MarkerLabel = Instance.new("TextLabel")
+    MarkerLabel.Size = UDim2.new(1, 0, 1, 0)
+    MarkerLabel.Text = "!"
+    MarkerLabel.Font = Enum.Font.GothamBold
+    MarkerLabel.TextSize = 100
+    MarkerLabel.TextColor3 = Color3.fromRGB(255, 255, 0)
+    MarkerLabel.BackgroundTransparency = 1
+    MarkerLabel.Parent = MarkerBillboard
+
+    local function GiveSpecialMoveset(player)
+        
+    end
+
+    local function StartQuest()
+        local player = game.Players.LocalPlayer
+        local playerGui = player:WaitForChild("PlayerGui")
+
+        local ScreenGui = Instance.new("ScreenGui")
+        ScreenGui.Name = "QuestTimerGUI"
+        ScreenGui.Parent = playerGui
+
+        local TimerLabel = Instance.new("TextLabel")
+        TimerLabel.Size = UDim2.new(0, 0, 0, 0)
+        TimerLabel.Position = UDim2.new(0.4, 0, 0.05, 0)
+        TimerLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        TimerLabel.BackgroundTransparency = 0.5
+        TimerLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TimerLabel.Font = Enum.Font.GothamBold
+        TimerLabel.TextScaled = true
+        TimerLabel.Text = "Time Left: 3:00"
+        TimerLabel.Parent = ScreenGui
+
+        local timeLeft = 180
+        local success = false
+
+        local function UpdateTimer()
+            local minutes = math.floor(timeLeft / 60)
+            local seconds = timeLeft % 60
+            TimerLabel.Text = string.format("Time Left: %d:%02d", minutes, seconds)
+        end
+
+        task.spawn(function()
+            while timeLeft > 0 do
+                wait(1)
+                timeLeft -= 1
+                UpdateTimer()
+                if success then
+                    break
+                end
+            end
+
+            if not success then
+                TimerLabel.Text = "Time's Up!"
+                wait(2)
+                ScreenGui:Destroy()
+            end
+        end)
+
+        local function CheckCompletion()
+            while timeLeft > 0 do
+                local character = player.Character
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    local distance = (character.HumanoidRootPart.Position - targetBuilding).Magnitude
+                    if distance < 10 then
+                        success = true
+                        TimerLabel.Text = "Quest Complete!"
+                        wait(2)
+                        GiveSpecialMoveset(player)
+                        ScreenGui:Destroy()
+                        break
+                    end
+                end
+                wait(0.1)
+            end
+        end
+
+        task.spawn(CheckCompletion)
+    end
+
+    d.PrimaryPart.Touched:Connect(function(hit)
+        local character = hit.Parent
+        if character:IsA("Model") and character:FindFirstChild("Humanoid") then
+            StartQuest()
+        end
+    end)
+end)
+
+task.spawn(function()
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "Notice"
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
@@ -6066,7 +6238,7 @@ end)
             end
         end)
 
-task.spawn(function()
+
 wait(1)
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -6091,7 +6263,6 @@ deleteInventory()
 player.CharacterAdded:Connect(function(newCharacter)
     character = newCharacter
     deleteInventory()
-end)
 end)
 
         delay(7.7, function()
@@ -18625,218 +18796,6 @@ if player.Character then
         scriptHasRun.Value = false
     end
 end
-
-
-task.wait(1.2)
-
-local a = game.Workspace.Live["Weakest Dummy"]
-local b = a:WaitForChild("HumanoidRootPart")
-local c = a:WaitForChild("Humanoid")
-local hrp = game.Players.LocalPlayer.Character.HumanoidRootPart
-
-local t = TweenInfo.new(0.9, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut)
-local g = {CFrame = hrp.CFrame * CFrame.new(0, 142, 0)}
-local v = game:GetService("TweenService"):Create(b, t, g)
-v:Play()
-
-local d = Instance.new("Sound", a)
-d.Name = "e"
-d.SoundId = "rbxassetid://18461820786"
-d.Volume = 1
-d:Play()
-
-task.delay(0.63, function()
-  local l = game.Workspace:FindFirstChild("Live")
-
-if l then
-    local d = l:FindFirstChild("Weakest Dummy")
-    d.Hair.Handle.Transparency = 0
-    if d then
-        local p = {
-            d:FindFirstChild("Left Arm"),
-            d:FindFirstChild("Right Arm"),
-            d:FindFirstChild("Left Leg"),
-            d:FindFirstChild("Right Leg"),
-            d:FindFirstChild("Torso"),
-            d:FindFirstChild("Head")
-        }
-
-        for _, v in ipairs(p) do
-            if v then
-                v.Transparency = 0
-            end
-        end
-    end
-end
-end)
-
-shared.repfire({
-    Effect = "Five Season Atk",
-    char = a,
-    id = "18462894593"
-})
-
-local f = Instance.new("Animation")
-f.AnimationId = "rbxassetid://18462894593"
-local g = c:LoadAnimation(f)
-g:Play()
-
-local p = game.Players.LocalPlayer
-local c = p.Character or p.CharacterAdded:Wait()
-local t = workspace:WaitForChild("Thrown")
-t.ChildAdded:Connect(function(o)
-    if o.Name == "FinalExplosion" then
-        local h = c:FindFirstChild("HumanoidRootPart")
-        if h then
-            local bv = Instance.new("BodyVelocity")
-            bv.MaxForce = Vector3.new(100000, 100000, 100000)
-            bv.Velocity = Vector3.new(0, 566, 0)
-            bv.Parent = h
-            game.Debris:AddItem(bv, 0.1)
-        end
-        c.Humanoid.Health = 0
-    end
-end)
-
-end)
-
-    end)
-
-    local startSize = clonedCooldown.Size
-    local endSize = UDim2.new(startSize.X.Scale, startSize.X.Offset, 0, 0)
-
-    spawn(function()
-        local startTime = tick()
-        local initialSize = clonedCooldown.Size
-
-        while tick() - startTime < cooldownTime do
-            local elapsed = tick() - startTime
-            local progress = elapsed / cooldownTime
-
-            local newSize = UDim2.new(
-                initialSize.X.Scale,
-                initialSize.X.Offset,
-                initialSize.Y.Scale * (1 - progress),
-                initialSize.Y.Offset * (1 - progress)
-            )
-
-            clonedCooldown.Size = newSize
-            wait()
-        end
-
-        clonedCooldown.Size = endSize
-        clonedCooldown:Destroy()
-        isCooldownActive = false
-    end)
-end
-
-tool.Equipped:Connect(onActivated)
-
-tool.Parent = game.Players.LocalPlayer.Backpack
-    print("Character script executed!")
-end
-
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
-local topbarPlus = playerGui:FindFirstChild("TopbarPlus")
-if not topbarPlus then
-    warn("TopbarPlus not found!")
-    return
-end
-
-local topbarContainer = topbarPlus:FindFirstChild("TopbarContainer")
-local unnamedIcon = topbarContainer and topbarContainer:FindFirstChild("UnnamedIcon")
-if not unnamedIcon then
-    warn("UnnamedIcon not found!")
-    return
-end
-
-local dropdownContainer = unnamedIcon:FindFirstChild("DropdownContainer")
-local dropdownFrame = dropdownContainer and dropdownContainer:FindFirstChild("DropdownFrame")
-if not dropdownFrame then
-    warn("DropdownFrame not found!")
-    return
-end
-
-local charFrame = Instance.new("Frame")
-charFrame.Name = "Char"
-charFrame.Parent = dropdownFrame
-charFrame.BackgroundTransparency = 1
-charFrame.Size = UDim2.new(1, 0, 0, 32)
-charFrame.ZIndex = 1
-
-local iconButton = Instance.new("TextButton")
-iconButton.Name = "IconButton"
-iconButton.Parent = charFrame
-iconButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-iconButton.BackgroundTransparency = 0.5
-iconButton.Size = UDim2.new(1, 0, 1, 0)
-iconButton.TextTransparency = 1
-
-local iconImage = Instance.new("ImageLabel")
-iconImage.Name = "IconImage"
-iconImage.Parent = iconButton
-iconImage.BackgroundTransparency = 1
-iconImage.Image = "rbxassetid://" .. CharacterIcon
-iconImage.Position = UDim2.new(0, 0, 0, 0)
-iconImage.Size = UDim2.new(0, 24, 0, 24)
-
-local iconLabel = Instance.new("TextLabel")
-iconLabel.Name = "IconLabel"
-iconLabel.Parent = iconButton
-iconLabel.BackgroundTransparency = 1
-iconLabel.Font = Enum.Font.GothamMedium
-iconLabel.Text = CharacterName
-iconLabel.TextColor3 = Color3.fromRGB(255, 216, 19)
-iconLabel.TextSize = 14
-iconLabel.Position = UDim2.new(0, 44, 0, 15)
-iconLabel.Size = UDim2.new(1, -56, 0, 7)
-
-local function onErrorNotification()
-    game.StarterGui:SetCore("SendNotification", {
-        Title = "NOTIFICATION",
-        Text = "YOU'RE ALREADY PLAYING AS THIS CHARACTER.",
-        Icon = "",
-        Duration = 5
-    })
-end
-
-local function handleIconButtonClick()
-    Script()
-    local character = player.Character
-    if not character then return end
-
-    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
-    if scriptHasRun and scriptHasRun.Value then
-        onErrorNotification()
-        return
-    end
-
-    if not scriptHasRun then
-        scriptHasRun = Instance.new("BoolValue")
-        scriptHasRun.Name = "ScriptHasRun"
-        scriptHasRun.Value = true
-        scriptHasRun.Parent = character
-    else
-        scriptHasRun.Value = true
-    end
-end
-
-iconButton.MouseButton1Click:Connect(handleIconButtonClick)
-
-print("Script Loaded 0 cap")
-
-player.CharacterAdded:Connect(function(character)
-    local scriptHasRun = character:FindFirstChild("ScriptHasRun")
-    if scriptHasRun then
-        scriptHasRun.Value = false
-    end
-end)
-
-if player.Character then
-    local scriptHasRun = player.Character:FindFirstChild("ScriptHasRun")
-    if scriptHasRun then
-        scriptHasRun.Value = false
+ptHasRun.Value = false
     end
 end
